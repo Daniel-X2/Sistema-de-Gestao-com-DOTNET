@@ -1,5 +1,3 @@
-
-using System.Runtime.CompilerServices;
 using Utils;
 using Dto;
 using Api.Core.Application.repository;

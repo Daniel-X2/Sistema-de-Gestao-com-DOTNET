@@ -66,3 +66,6 @@ As rotas estão organizadas por contexto:
 - /product/ - Operações relacionadas a produtos.
 
 Cada contexto suporta os métodos HTTP padrão: GET (consulta), POST (criação), PUT (atualização) e DELETE (remoção).
+## .ENV
+O projeto usa o .env para armazenar os segredos do projeto
+DB_CONNECTION=Host=localhost;Database=nome;Username=user;Password=senha
