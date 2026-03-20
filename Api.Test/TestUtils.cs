@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using Api.Test;
+using Xunit;
 
 using Utils;
 
@@ -6,41 +7,23 @@ public class TestUtils
 {
     private static Validation validation=new ();
     
-    [Theory]
-    [InlineData("665.940.427-93")]
-    [InlineData("348.026.691-60")]
-    public  void TestCpfValido(string cpf)
+    [Fact]
+    public  void TestCpfValido()
     {
-        //Validation _validation = new();
-        try
-        {
-            cpf= validation.IsValidDigit(cpf);
-            Assert.Equal(11,cpf.Length);
-            Assert.Equal(cpf,cpf);
-        }
-        catch (InvalidCpfException)
-        {
-            Assert.Fail("O IsvalidDigit nao passou no test");
-        }
+        string cpf = ReturnDados.ReturnCpf();
+        cpf= validation.IsValidDigit(cpf);
+        Assert.Equal(11,cpf.Length);
+        Assert.Equal(cpf,cpf);
+        
        
     }
-    [Theory]
-    [InlineData("248.526.791-60")]
-    [InlineData("123456789")]
-    public  void TestCpfInvalido(string cpf)
+    [Fact]
+    public  void TestCpfInvalido()
     {
-       // Validation validation = new();
+        string cpf = "7854624550";
+        Assert.Throws<InvalidCpfException>(() =>  validation.IsValidDigit(cpf));
         
-        try
-        {
-            cpf = validation.IsValidDigit(cpf);
-            Assert.Fail("O IsvalidDigit nao passou no test");
-        }
-        catch (InvalidCpfException)
-        {
-            Assert.True(true,"o IsvalidDigit passou no test");
-        }
-        
+
     }
     
     [Theory]

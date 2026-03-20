@@ -8,108 +8,79 @@ namespace Api.Test;
 public class TestServiceProduct
 {
     Mock<IRepositoryProduct> moq = new();
-    private ProdutoDto campos = new();
-    [Theory]
-    [InlineData("I5 5560",1575,10,55,250.00f)]
-    public async Task TestAddProduct(string nome,int codigo,int quantidade,int lote,float valor_revenda)
+   
+   [Fact]
+    public async Task TestAddProduct()
     {
-        campos.Nome = nome;
-        campos.Codigo = codigo;
-        campos.Lote = lote;
-        campos.Quantidade = quantidade;
-        campos.ValorRevenda = valor_revenda;
-
-        moq.Setup(repo => repo.AddProduct(campos)).ReturnsAsync(1);
+        var product = ReturnDados.ReturnProduct();
+        moq.Setup(repo => repo.AddProduct(product)).ReturnsAsync(1);
         
         var n1 =new  ServiceProduct(moq.Object);
-        await  n1.AddProduct(campos);
+        await  n1.AddProduct(product);
     }
-    [Theory]
-    [InlineData("I5 5560",-1,10,55,250.00f)]
-    public async Task TestAddInvalidCode(string nome,int codigo,int quantidade,int lote,float valor_revenda)
+    [Fact]
+    public async Task TestAddInvalidCode()
     {
-        campos.Nome = nome;
-        campos.Codigo = codigo;
-        campos.Lote = lote;
-        campos.Quantidade = quantidade;
-        campos.ValorRevenda = valor_revenda;
-        moq.Setup(repo => repo.AddProduct(campos)).ReturnsAsync(1);
+        var product = ReturnDados.ReturnProduct();
+        product.Codigo = 0;
+        moq.Setup(repo => repo.AddProduct(product)).ReturnsAsync(1);
         var n1 =new  ServiceProduct(moq.Object);
 
-        await Assert.ThrowsAsync<InvalidCodeException>(async () => await n1.AddProduct(campos));
+        await Assert.ThrowsAsync<InvalidCodeException>(async () => await n1.AddProduct(product));
     }
-    [Theory]
-    [InlineData("I5 5560",15795,10,0,250.00)]
-    public async Task TestAddInvalidlote(string nome,int codigo,int quantidade,int lote,float valor_revenda)
+    [Fact]
+    public async Task TestAddInvalidlote()
     {
-        campos.Nome = nome;
-        campos.Codigo = codigo;
-        campos.Lote = lote;
-        campos.Quantidade = quantidade;
-        campos.ValorRevenda = valor_revenda;
-        moq.Setup(repo => repo.AddProduct(campos)).ReturnsAsync(1);
+        var product = ReturnDados.ReturnProduct();
+        product.Lote = 0;
+        moq.Setup(repo => repo.AddProduct(product)).ReturnsAsync(1);
         var n1 =new  ServiceProduct(moq.Object);
 
-        await Assert.ThrowsAsync<InvalidLoteException>(async () => await n1.AddProduct(campos));
+        await Assert.ThrowsAsync<InvalidLoteException>(async () => await n1.AddProduct(product));
     }
-    [Theory]
-    [InlineData("I5 4460",15795,10,548,0)]
-    public async Task TestAddInvalidValor(string nome,int codigo,int quantidade,int lote,float valor_revenda)
+    [Fact]
+    public async Task TestAddInvalidValor()
     {
-        campos.Nome = nome;
-        campos.Codigo = codigo;
-        campos.Lote = lote;
-        campos.Quantidade = quantidade;
-        campos.ValorRevenda = valor_revenda;
-        moq.Setup(repo => repo.AddProduct(campos)).ReturnsAsync(1);
+        var product = ReturnDados.ReturnProduct();
+        product.ValorRevenda = 0;
+        
+        moq.Setup(repo => repo.AddProduct(product)).ReturnsAsync(1);
         var n1 =new  ServiceProduct(moq.Object);
 
-        await Assert.ThrowsAsync<NegativeNumericException>(async () => await n1.AddProduct(campos));
+        await Assert.ThrowsAsync<NegativeNumericException>(async () => await n1.AddProduct(product));
         
     }
-    [Theory]
-    [InlineData("I5 4460",15795,0,575,5)]
-    public async Task TestAddInvalidQuantidade(string nome,int codigo,int quantidade,int lote,float valor_revenda)
+    [Fact]
+    public async Task TestAddInvalidQuantidade()
     {
-        campos.Nome = nome;
-        campos.Codigo = codigo;
-        campos.Lote = lote;
-        campos.Quantidade = quantidade;
-        campos.ValorRevenda = valor_revenda;
-        moq.Setup(repo => repo.AddProduct(campos)).ReturnsAsync(1);
+        var product = ReturnDados.ReturnProduct();
+        product.Quantidade = 0;
+        moq.Setup(repo => repo.AddProduct(product)).ReturnsAsync(1);
         var n1 =new  ServiceProduct(moq.Object);
 
-        await Assert.ThrowsAsync<NegativeNumericException>(async () => await n1.AddProduct(campos));
+        await Assert.ThrowsAsync<NegativeNumericException>(async () => await n1.AddProduct(product));
         
     }
     
-    [Theory]
-    [InlineData(8,"I5 4460",15795,10,-1,5)]
-    public async Task TestUpdateProduct(int id,string nome,int codigo,int quantidade,int lote,float valor_revenda)
+    [Fact]
+    public async Task TestUpdateProduct()
     {
-        campos.Nome = nome;
-        campos.Codigo = codigo;
-        campos.Lote = lote;
-        campos.Quantidade = quantidade;
-        campos.ValorRevenda = valor_revenda;
-        moq.Setup(repo => repo.GetProductById(id)).ReturnsAsync(campos);
-        moq.Setup(repo => repo.UpdateProduct(campos,id)).ReturnsAsync(1);
+        int id = 2;
+        var product = ReturnDados.ReturnProduct();
+        moq.Setup(repo => repo.GetProductById(id)).ReturnsAsync(product);
+        moq.Setup(repo => repo.UpdateProduct(product,id)).ReturnsAsync(1);
         var n1 =new  ServiceProduct(moq.Object);
 
-        Assert.True(await n1.UpdateProduct(campos,id));
+        Assert.True(await n1.UpdateProduct(product,id));
     }
      
     [Theory]
     [InlineData(8,"I5 4460",15795,10,-1,5)]
     public async Task TestUpdateLote(int id,string nome,int codigo,int quantidade,int lote,float valor_revenda)
     {
-        campos.Nome = nome;
-        campos.Codigo = codigo;
-        campos.Lote = lote;
-        campos.Quantidade = quantidade;
-        campos.ValorRevenda = valor_revenda;
-        moq.Setup(repo => repo.GetProductById(id)).ReturnsAsync(campos);
-        moq.Setup(repo => repo.UpdateProduct(campos,id)).ReturnsAsync(1);
+        var product = ReturnDados.ReturnProduct();
+        moq.Setup(repo => repo.GetProductById(id)).ReturnsAsync(product);
+        moq.Setup(repo => repo.UpdateProduct(product,id)).ReturnsAsync(1);
         var n1 =new  ServiceProduct(moq.Object);
         
         

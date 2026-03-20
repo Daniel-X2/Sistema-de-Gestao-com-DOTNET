@@ -45,7 +45,7 @@ class ServiceProduct(IRepositoryProduct repo):IServiceProduct
             {
                 throw new InvalidNameException();
             }
-            if (await repo.IsExistCode(campos.Codigo) || int.IsNegative(campos.Codigo))
+            if (await repo.IsExistCode(campos.Codigo) || int.IsNegative(campos.Codigo) || campos.Codigo==0)
             {
                 throw new InvalidCodeException(campos.Codigo);
             }

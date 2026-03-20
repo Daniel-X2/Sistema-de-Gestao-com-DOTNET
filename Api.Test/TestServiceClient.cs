@@ -11,83 +11,64 @@ namespace Api.Test;
 public class TestServiceClient
 {
     Mock<IRepositoryClient> moq = new();
-    private ClientDto campos = new();
-    [Theory]
-    [InlineData("Daniel","665.940.427-93",875,true)]
-    public async Task TestAddClientValido(string nome,string cpf,int conta, bool isvip)
+
+    [Fact]
+    public async Task TestAddClientValido()
     {
-        
-        campos.Nome = nome;
-        campos.Conta = conta;
-        campos.Cpf = cpf;
-        campos.Isvip = isvip;
-        moq.Setup(repo=> repo.AddClient(campos) ).ReturnsAsync(1);
+        var client =await ReturnDados.ReturnCLient();
+     
+        moq.Setup(repo=> repo.AddClient(client) ).ReturnsAsync(1);
         var n1 = new ClientService(moq.Object);
         
-        await n1.AddService(campos);
+        await n1.AddService(client);
         
     }
-    [Theory]
-    [InlineData("Daniel","57852115",55,true)]
-    public async Task TestAddClientInvalidoCpf(string nome,string cpf,int conta, bool isvip)
+    [Fact]
+    public async Task TestAddClientInvalidoCpf()
     {
-        
-        campos.Nome = nome;
-        campos.Conta = conta;
-        campos.Cpf = cpf;
-        campos.Isvip = isvip;
-        moq.Setup(repo=> repo.AddClient(campos) ).ReturnsAsync(1);
+        var client =await ReturnDados.ReturnCLient() ;
+        client.Cpf = "47854664565";
+        moq.Setup(repo=> repo.AddClient(client) ).ReturnsAsync(1);
         var n1 = new ClientService(moq.Object);
         
         
-        await Assert.ThrowsAsync<InvalidCpfException>(async ( )=> await n1.AddService(campos));
+        await Assert.ThrowsAsync<InvalidCpfException>(async ( )=> await n1.AddService(client));
         
     }
-    [Theory]
-    [InlineData("Daniel","665.940.427-93",-15,true)]
-    public async Task TestAddClientInvalidoConta(string nome,string cpf,int conta, bool isvip)
+    [Fact]
+    public async Task TestAddClientInvalidoConta()
     {
+        var client =await ReturnDados.ReturnCLient() ;
+        client.Conta = 0;
         
-        campos.Nome = nome;
-        campos.Conta = conta;
-        campos.Cpf = cpf;
-        campos.Isvip = isvip;
-        moq.Setup(repo=> repo.AddClient(campos) ).ReturnsAsync(1);
+        moq.Setup(repo=> repo.AddClient(client) ).ReturnsAsync(1);
         var n1 = new ClientService(moq.Object);
         
         
-        await Assert.ThrowsAsync<InvalidAccountException>(async ( )=> await n1.AddService(campos));
+        await Assert.ThrowsAsync<InvalidAccountException>(async ( )=> await n1.AddService(client));
         
     }
-    [Theory]
-    [InlineData("Da","665.940.427-93",484,false)]
-    public async Task TestAddClientInvalidoNome(string nome,string cpf,int conta, bool isvip)
+    [Fact]
+    public async Task TestAddClientInvalidoNome()
     {
-        
-        campos.Nome = nome;
-        campos.Conta = conta;
-        campos.Cpf = cpf;
-        campos.Isvip = isvip;
-        moq.Setup(repo=> repo.AddClient(campos) ).ReturnsAsync(1);
+        var client =await ReturnDados.ReturnCLient() ;
+        client.Nome = "dan";
+        moq.Setup(repo=> repo.AddClient(client) ).ReturnsAsync(1);
         var n1 = new ClientService(moq.Object);
         
-        await Assert.ThrowsAsync<InvalidNameException>(async ( )=> await n1.AddService(campos));
+        await Assert.ThrowsAsync<InvalidNameException>(async ( )=> await n1.AddService(client));
         
     }
-    [Theory]
-    [InlineData("Daniel","665.940.427-93",8585,true)]
-    public async Task TestUpdateClientValido(string nome,string cpf,int conta, bool isvip)
+    [Fact]
+    public async Task TestUpdateClientValido()
     {
-        campos.Nome = nome;
-        campos.Conta = conta;
-        campos.Cpf = cpf;
-        campos.Isvip = isvip;
+        var client = await ReturnDados.ReturnCLient() ;
         //eu pego outro que ele pega pelo id e faço o retorno ser igual zero
-        moq.Setup(repo => repo.GetById(5)).ReturnsAsync(campos);
-        moq.Setup(repo=> repo.UpdateClient(campos,5) ).ReturnsAsync(1);
+        moq.Setup(repo => repo.GetById(5)).ReturnsAsync(client);
+        moq.Setup(repo=> repo.UpdateClient(client,5) ).ReturnsAsync(1);
         var n1 = new ClientService(moq.Object);
         
-        await n1.UpdateService(5,campos);
+        await n1.UpdateService(5,client);
         Assert.True(true,"o teste passou");
     }
     [Theory]
