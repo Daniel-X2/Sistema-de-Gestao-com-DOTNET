@@ -27,7 +27,7 @@ public class TestServiceClient
     public async Task TestAddClientInvalidoCpf()
     {
         var client =await ReturnDados.ReturnCLient() ;
-        client.Cpf = "47854664565";
+        client.Cpf = "47854664505";
         moq.Setup(repo=> repo.AddClient(client) ).ReturnsAsync(1);
         var n1 = new ClientService(moq.Object);
         

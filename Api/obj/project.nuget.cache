@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Cbhd2ugI59o=",
+  "dgSpecHash": "Cq8q/5yAdFk=",
   "success": true,
-  "projectFilePath": "/home/daniel/RiderProjects/API-Gestao-Assincrona/Api/Api.csproj",
+  "projectFilePath": "/home/daniel/Documentos/GitHub/API-Gestao-Assincrona/Api/Api.csproj",
   "expectedPackageFiles": [
     "/home/daniel/.nuget/packages/dotnetenv/3.1.1/dotnetenv.3.1.1.nupkg.sha512",
     "/home/daniel/.nuget/packages/microsoft.aspnetcore.diagnostics.entityframeworkcore/8.0.0/microsoft.aspnetcore.diagnostics.entityframeworkcore.8.0.0.nupkg.sha512",

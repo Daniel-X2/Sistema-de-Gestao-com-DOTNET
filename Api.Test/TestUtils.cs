@@ -11,6 +11,7 @@ public class TestUtils
     public  void TestCpfValido()
     {
         string cpf = ReturnDados.ReturnCpf();
+     
         cpf= validation.IsValidDigit(cpf);
         Assert.Equal(11,cpf.Length);
         Assert.Equal(cpf,cpf);
@@ -20,7 +21,7 @@ public class TestUtils
     [Fact]
     public  void TestCpfInvalido()
     {
-        string cpf = "7854624550";
+        string cpf = "78546245501";
         Assert.Throws<InvalidCpfException>(() =>  validation.IsValidDigit(cpf));
         
 

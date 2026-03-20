@@ -36,7 +36,16 @@ namespace Utils
         int.TryParse(cpf[10].ToString(),out int digito2);
             
         cpf=cpf.Substring(0,9);
-        int resultado1 = 0+CpfEtapa1(cpf);
+        int resultado1;
+        if (digito1 == 0)
+        {
+            resultado1 = digito1;
+        }
+        else
+        {
+            resultado1 = 0+CpfEtapa1(cpf);
+        }
+      
             
         int resultado2 = CpfEtapa2(cpf, resultado1);
         if (resultado1 != digito1 || resultado2 != digito2)
