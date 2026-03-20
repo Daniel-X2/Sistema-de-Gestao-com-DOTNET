@@ -18,7 +18,7 @@ namespace Api
             scope.AddScopeFuncion(builder);
             var app = builder.Build();
             app.UseMiddleware<ExceptionHandlingMiddleware>();
-            builder.Services.AddScoped<ILoggerFactory>();
+           // builder.Services.AddScoped<ILoggerFactory>();
             await new Routers.Routers().Teste(app);
             app.UseHttpsRedirection();
             
