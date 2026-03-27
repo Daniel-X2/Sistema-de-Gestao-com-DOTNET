@@ -6,13 +6,13 @@ namespace Api.Core.Application.service
 {
     public interface IServiceProduct
 {
-  public  Task<ListaProduct> GetAllProduct();
-  public Task<bool> AddProduct(ProdutoDto campos);
-  public Task<bool> DeleteProduct(int id);
-  public Task<ListaProduct>  GetEstoque();
-  public Task<List<decimal>> GetValorBruto();
-  public Task<ProdutoDto> GetProdutId(int id);
-  public Task<bool> UpdateProduct(ProdutoDto campos, int id);
+    Task<ListaProduct> GetAllProduct();
+   Task<bool> AddProduct(ProdutoDto campos);
+   Task<bool> DeleteProduct(int id);
+   Task<ListaProduct>  GetEstoque();
+   Task<List<decimal>> GetValorBruto();
+   Task<ProdutoDto> GetProdutId(int id);
+   Task<bool> UpdateProduct(ProdutoDto campos, int id);
 }
 class ServiceProduct(IRepositoryProduct repo):IServiceProduct
 {

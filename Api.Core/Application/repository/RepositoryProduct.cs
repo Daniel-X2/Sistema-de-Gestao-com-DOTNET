@@ -6,17 +6,20 @@ using Api.Core.Application.utils;
 namespace Api.Core.Application.repository
 {
     public interface IRepositoryProduct
-{
+    {
+    // Os métodos são definidos como internal para restringir o acesso
+    // direto ao repositório fora deste assembly.
+    // A implementação usa public apenas para cumprir o contrato da interface.
     internal Task<ListaProduct> GetAllProduct();
     internal Task<ListaProduct> GetEstoque();
     internal  Task<List<decimal>> GetValorBruto();
     internal  Task<int> AddProduct(ProdutoDto campos);
     internal Task<int> UpdateProduct(ProdutoDto campos, int id);
     internal  Task<int> DeleteProduct(int id);
-   internal Task<ProdutoDto> GetProductById(int id);
-  internal Task<bool> IsExistLote(int lote);
-  internal Task<bool> IsExistCode(int codigo);
-}
+    internal Task<ProdutoDto> GetProductById(int id);
+    internal Task<bool> IsExistLote(int lote);
+    internal Task<bool> IsExistCode(int codigo);
+    }
 class RepositoryProduct(IConnect host):IRepositoryProduct
 {
     public  async Task<ProdutoDto> GetProductById(int id)

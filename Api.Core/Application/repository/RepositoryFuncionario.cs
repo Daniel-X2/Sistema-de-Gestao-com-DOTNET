@@ -5,8 +5,13 @@ using Api.Core.Application.utils;
 
 namespace Api.Core.Application.repository
 { 
+    
+
 public interface IRepositoryFuncionario
-    { 
+{ 
+    // Os métodos são definidos como internal para restringir o acesso
+    // direto ao repositório fora deste assembly.
+    // A implementação usa public apenas para cumprir o contrato da interface.
    internal Task<bool> ExistsCpf(string cpf);
    internal Task<ListaFuncionario> GetFuncionario();
    internal Task<int> AddFuncionario(FuncionarioDto campos);//

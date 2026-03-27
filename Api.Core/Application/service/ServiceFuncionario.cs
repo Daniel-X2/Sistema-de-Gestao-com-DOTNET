@@ -5,12 +5,12 @@ namespace Api.Core.Application.service
 {
    public interface IServiceFuncionario
    {
-       public Task<bool> AddService(FuncionarioDto campos);
+       Task<bool> AddService(FuncionarioDto campos);
 
-      public Task<bool> UpdateFuncionarioService(FuncionarioDto campos, int id);
-      public Task<bool> DeleteFuncionarioService(int id); 
-      public Task<ListaFuncionario> GetAll();
-      public Task<FuncionarioDto> GetByIdService(int id);
+       Task<bool> UpdateFuncionarioService(FuncionarioDto campos, int id);
+       Task<bool> DeleteFuncionarioService(int id); 
+       Task<ListaFuncionario> GetAll();
+       Task<FuncionarioDto> GetByIdService(int id);
    }
     public class  ServiceFuncionario(IRepositoryFuncionario repo):IServiceFuncionario
     {

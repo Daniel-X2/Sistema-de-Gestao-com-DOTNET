@@ -3,9 +3,14 @@ using Dto;
 using Api.Core.Application.utils;
 
 namespace Api.Core.Application.repository
-{
+{ 
+    
+
 public interface  IRepositoryClient
 {
+    // Os métodos são definidos como internal para restringir o acesso
+    // direto ao repositório fora deste assembly.
+    // A implementação usa public apenas para cumprir o contrato da interface.    
    internal Task<ListaClient>  GetAllClient();
    internal Task<ClientDto> GetById(int id);
    internal Task<int> AddClient(ClientDto campos);
