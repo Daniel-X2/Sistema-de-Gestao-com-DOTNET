@@ -12,12 +12,12 @@ public class  ClientRouter
     public  async  Task Routers(WebApplication app)
     {
         
-        app.MapGet("/client/get/", async Task<ListaClient> (IServiceClient service) =>
+        app.MapGet("/client/get/", async Task<IResult> (IServiceClient service) =>
         {
            
             ListaClient lista=  await service.GetAllService();
             
-            return lista ;
+            return Results.Ok(lista) ;
         }).WithTags("Client").WithSummary("Listar todos os clientes").WithDescription("Retorna uma lista contendo todos os clientes cadastrados no sistema.").RequireAuthorization();
 
         app.MapDelete("/client/delete/{id}", async  Task<IResult> (int id,IServiceClient service) =>

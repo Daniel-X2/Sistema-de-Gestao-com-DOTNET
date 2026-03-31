@@ -10,14 +10,14 @@ public class FuncionarioRouters
         
         public  async  Task Router(WebApplication app)
         {
-            app.MapPost("/login/", async Task<IResult> (FuncionarioJsonBody body,IServiceFuncionario service,IConfiguration config) =>
+            app.MapPost("/login/", async Task<IResult> (FuncionarioJsonBody body,IServiceFuncionario service,IConfiguration config,TokenService token) =>
             {
                 
                 var n1 = await service.Admin(body.cpf);
                
-                TokenService token=new (config);
                 
-                if (Crypto.verificar(body.Senha,n1.SenhaHash))
+                
+                if (Crypto.VerificarHash(body.Senha,n1.SenhaHash))
                 {
                    return Results.Ok(token.Generate(new Users(body.cpf, body.Senha, new[] { "Admin" }), n1.isadmin));
                     
@@ -25,19 +25,19 @@ public class FuncionarioRouters
                 return  Results.Ok(token.Generate(new Users(body.cpf,body.Senha,new []{"User"}),n1.isadmin));
             
             });
-            app.MapGet("/funcionario/get",async Task<ListaFuncionario> (IServiceFuncionario n1) =>
+            app.MapGet("/funcionario/get",async Task<IResult> (IServiceFuncionario service) =>
             {
-              //e bom retornar com id pra se caso eu quiser deletar depois
-                var n2= await n1.GetAll();
-                return n2 ;
+              
+                var funcionario= await service.GetAll();
+                return Results.Ok(funcionario) ;
                 
             }).WithTags("Funcionario").WithSummary("Lista os funcionarios").WithDescription("Retorna uma lista de todos os funcionários cadastrados, incluindo seus IDs para operações futuras.").RequireAuthorization("Admin");
             
         
-            app.MapGet("/funcionario/get/{id}",async (int id,IServiceFuncionario n1) =>
+            app.MapGet("/funcionario/get/{id}",async Task<IResult>(int id,IServiceFuncionario n1) =>
             {
                 var campo =await n1.GetByIdService(id);
-                return campo;
+                return Results.Ok(campo);
             }).WithTags("Funcionario").WithSummary("Lista o funcionario com o ID").WithDescription("Busca e retorna os detalhes de um funcionário específico através do seu ID único.").RequireAuthorization();
 
             app.MapDelete("/Funcionario/delete/{id}", async Task<IResult> (int id,IServiceFuncionario n1) =>

@@ -2,13 +2,10 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Api.Core.Application.utils;
 using Microsoft.AspNetCore.RateLimiting;
-using auth.Models;
 using auth.Services;
-using Dto;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
-using System.Collections.Generic;
+using Microsoft.OpenApi.Models;
+
 
 namespace Api
 
@@ -19,35 +16,34 @@ namespace Api
         
         public static async Task Main()
         {
-            
+            Load.LoadEnv();
             WebApplicationBuilder builder = WebApplication.CreateBuilder();
             builder.Services.AddRateLimiter(option =>
             {
                 option.AddFixedWindowLimiter("fixed", opt =>
                 {
-                    opt.PermitLimit = 5; // máximo 100 requisições
+                    opt.PermitLimit = 5;
                     opt.Window = TimeSpan.FromMinutes(1);
                 });
                 
             });
+            AddScope scope = new();
+            scope.AddScopeFuncion(builder);
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
                     options =>
                     {
-                        builder.Configuration.Bind("jwt", options);
-                        //builder.Configuration.Bind("jwt", options);
 
-                        // AGORA O PONTO CRÍTICO: Configurar a chave de assinatura
-                        var key = builder.Configuration["jwt:Key"]; // Ou o nome exato no seu appsettings.json
+                        var key = Environment.GetEnvironmentVariable("JWT_KEY"); // Ou o nome exato no seu appsettings.json
 
                         options.TokenValidationParameters = new TokenValidationParameters
                         {
                             ValidateIssuerSigningKey = true,
                             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
-                            ValidateIssuer = true, // Mude para false se não estiver validando o dono do token
-                            ValidateAudience = true, // Mude para false se não estiver validando o destino
-                            ValidIssuer = builder.Configuration["jwt:Issuer"],
-                            ValidAudience = builder.Configuration["jwt:Audience"]
+                            ValidateIssuer = true, 
+                            ValidateAudience = true, 
+                            ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
+                            ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE")
                         };
                     });
                 
@@ -58,7 +54,7 @@ namespace Api
             });
             
             //builder.Services.
-            builder.Services.AddTransient<TokenService>();
+            builder.Services.AddScoped<TokenService>();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
             {
@@ -69,22 +65,25 @@ namespace Api
                     Scheme = "bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Insira apenas o token JWT no campo abaixo."
+                    Description = "Insira apenas o token JWT abaixo."
                 });
 
-                options.AddSecurityRequirement(_ => new OpenApiSecurityRequirement
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
-                    { 
-                        new OpenApiSecuritySchemeReference("Bearer"), 
-                        new List<string>() 
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
                     }
                 });
             });
-            AddScope scope = new();
-            Load.LoadEnv();
             
-            scope.AddScopeFuncion(builder);
-           
             var app = builder.Build();
 
             app.UseSwagger();
@@ -97,14 +96,14 @@ namespace Api
             app.UseAuthentication();
             app.UseAuthorization();
             
-            //app.UseMiddleware<ExceptionHandlingMiddleware>();
-            app.MapGet("/5", () => {return;}).RequireAuthorization();
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseRateLimiter();
-            await new Routers.Routers().Teste(app);
-            //app.UseHttpsRedirection();
+            await new Routers.Routers().InitRouters(app);
+            app.UseHttpsRedirection();
            
             app.Run();
         }
     }
 }
+
 

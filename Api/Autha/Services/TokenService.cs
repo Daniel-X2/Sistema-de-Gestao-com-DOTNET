@@ -9,15 +9,11 @@ namespace auth.Services;
 
 public class TokenService
 {
-    private readonly IConfiguration _configuration;
-   public  TokenService(IConfiguration config)
-   {
-       _configuration = config;
-   }
+    
     public string Generate(Users user,bool isadmin)
     {
         var handler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30");//aqui vai o a chave
+        var key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY"));
        var credetial= new SigningCredentials(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256Signature);
 
        var tokenDescriptor = new SecurityTokenDescriptor
@@ -25,8 +21,8 @@ public class TokenService
            Subject = GenerateClaims(user,isadmin ),
            SigningCredentials = credetial,
            Expires = DateTime.UtcNow.AddHours(2),
-           Issuer = _configuration["jwt:Issuer"],
-                        Audience = _configuration["jwt:Audience"]
+           Issuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
+           Audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE")
 
        };
        var token = handler.CreateToken(tokenDescriptor);

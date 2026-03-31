@@ -3,7 +3,7 @@ namespace Api.Routers;
 public class Routers
 {
     
-    public async  Task Teste(WebApplication app)
+    public async  Task InitRouters(WebApplication app)
     {
 
        await new ClientRouter().Routers(app);
