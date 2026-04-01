@@ -4,9 +4,18 @@ using System.Text;
 
 namespace Utils
 { 
+    /// <summary>
+    /// Fornece métodos para validação de dados sensíveis como CPF, nomes e datas.
+    /// </summary>
     class Validation
     {
    
+    /// <summary>
+    /// Valida se um CPF é autêntico através do cálculo dos dígitos verificadores.
+    /// </summary>
+    /// <param name="cpf">String do CPF (com ou sem pontuação).</param>
+    /// <returns>O CPF limpo (apenas números) se for válido.</returns>
+    /// <exception cref="InvalidCpfException">Lançada se o CPF for nulo, incompleto ou tiver dígitos verificadores incorretos.</exception>
     public string IsValidDigit(string cpf)
     {
         
@@ -60,6 +69,11 @@ namespace Utils
         
         
     }
+    /// <summary>
+    /// Valida se um nome é válido (não nulo e com comprimento mínimo).
+    /// </summary>
+    /// <param name="nome">Nome a verificar.</param>
+    /// <returns>True se for válido.</returns>
     public bool ValidateName(string nome)
     {
         if (string.IsNullOrWhiteSpace(nome) || nome.Length<4)
@@ -70,6 +84,11 @@ namespace Utils
         return true;
     }
     
+    /// <summary>
+    /// Executa a primeira etapa do cálculo do dígito verificador do CPF.
+    /// </summary>
+    /// <param name="cpf">Os 9 primeiros dígitos do CPF.</param>
+    /// <returns>O primeiro dígito verificador calculado.</returns>
     public int CpfEtapa1(string cpf)
     {
         if (cpf.Length == 9)
@@ -100,6 +119,12 @@ namespace Utils
         return 0;
     }
 
+    /// <summary>
+    /// Executa a segunda etapa do cálculo do dígito verificador do CPF.
+    /// </summary>
+    /// <param name="cpf">Os 9 primeiros dígitos do CPF.</param>
+    /// <param name="digito">O primeiro dígito verificador já calculado.</param>
+    /// <returns>O segundo dígito verificador calculado.</returns>
     public int CpfEtapa2(string cpf,int digito)
     {
         if (cpf.Length == 9)
@@ -126,6 +151,12 @@ namespace Utils
         return 00;
     }
 
+    /// <summary>
+    /// Valida o ano de nascimento para garantir uma idade entre 18 e 85 anos.
+    /// </summary>
+    /// <param name="ano">Ano de nascimento.</param>
+    /// <returns>True se a idade estiver na faixa permitida.</returns>
+    /// <exception cref="InvalidNascimentoException">Lançada se o ano for futuro, negativo ou fora da faixa de idade.</exception>
     public bool ValidateBirthYear(int ano)
     {
         int anoAtual = DateTime.Now.Year;

@@ -8,10 +8,16 @@ using Xunit;
 
 namespace Api.Test;
 
+/// <summary>
+/// Testes unitários para a camada de serviço de clientes.
+/// </summary>
 public class TestServiceClient
 {
     Mock<IRepositoryClient> moq = new();
 
+    /// <summary>
+    /// Verifica se o serviço adiciona corretamente um cliente com dados válidos.
+    /// </summary>
     [Fact]
     public async Task TestAddClientValido()
     {

@@ -20,8 +20,16 @@ public interface IRepositoryFuncionario
    internal Task<FuncionarioLoginDto> GetAdmin(string cpf);
    internal Task<FuncionarioDto> GetById(int id);
     }
+/// <summary>
+/// Repositório para gestão de funcionários no banco de dados.
+/// </summary>
 internal class RepositoryFuncionario(IConnect host):IRepositoryFuncionario
 {
+    /// <summary>
+    /// Recupera dados essenciais de um funcionário para autenticação via CPF.
+    /// </summary>
+    /// <param name="cpf">CPF do funcionário.</param>
+    /// <returns>Dados de login (Admin, SenhaHash, CPF) ou null.</returns>
     public async Task<FuncionarioLoginDto> GetAdmin(string cpf)
     {
         await using NpgsqlConnection connect = host.Connect();
@@ -42,6 +50,11 @@ internal class RepositoryFuncionario(IConnect host):IRepositoryFuncionario
         return resultado;
     }
     
+    /// <summary>
+    /// Verifica se um CPF já existe na tabela de funcionários.
+    /// </summary>
+    /// <param name="cpf">CPF a pesquisar.</param>
+    /// <returns>True se existir.</returns>
     public async Task<bool> ExistsCpf(string cpf)
     {
         await using NpgsqlConnection connect =host.Connect();
@@ -52,6 +65,10 @@ internal class RepositoryFuncionario(IConnect host):IRepositoryFuncionario
         bool resultado=(bool) await cmd.ExecuteScalarAsync();
         return resultado;
     }
+    /// <summary>
+    /// Lista todos os funcionários cadastrados.
+    /// </summary>
+    /// <returns>ListaFuncionario com todos os registros.</returns>
     public async Task<ListaFuncionario> GetFuncionario()
     {
         
@@ -77,6 +94,11 @@ internal class RepositoryFuncionario(IConnect host):IRepositoryFuncionario
          
         return lista;
     }
+    /// <summary>
+    /// Cadastra um novo funcionário no banco.
+    /// </summary>
+    /// <param name="campos">Dados do funcionário.</param>
+    /// <returns>Número de linhas afetadas.</returns>
     public  async Task<int> AddFuncionario(FuncionarioDto campos)
     {
         int resultado;
@@ -99,6 +121,12 @@ internal class RepositoryFuncionario(IConnect host):IRepositoryFuncionario
         return resultado;
     }  
     
+    /// <summary>
+    /// Atualiza o registro de um funcionário existente.
+    /// </summary>
+    /// <param name="campos">Dados atualizados.</param>
+    /// <param name="id">ID do funcionário.</param>
+    /// <returns>Número de linhas afetadas.</returns>
     public  async Task<int> UpdateFuncionario(FuncionarioDto campos,int id)
     {
      
@@ -119,6 +147,11 @@ internal class RepositoryFuncionario(IConnect host):IRepositoryFuncionario
          return  resultado;
 
     }
+    /// <summary>
+    /// Exclui um funcionário pelo ID.
+    /// </summary>
+    /// <param name="id">ID do funcionário.</param>
+    /// <returns>Número de linhas afetadas.</returns>
     public  async Task<int> DeleteFuncionario(int id)
     {
         int resultado;
@@ -137,6 +170,11 @@ internal class RepositoryFuncionario(IConnect host):IRepositoryFuncionario
         
         
     }
+    /// <summary>
+    /// Busca um funcionário específico pelo ID.
+    /// </summary>
+    /// <param name="id">ID do funcionário.</param>
+    /// <returns>DTO com dados do funcionário ou null.</returns>
     public  async Task<FuncionarioDto> GetById(int id)
     {
         await using NpgsqlConnection connect=host.Connect(); 

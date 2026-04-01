@@ -4,8 +4,15 @@ using Api.Core.Application.service;
 
 namespace Api.Routers;
 
+/// <summary>
+/// Camada de roteamento para produtos e estoque.
+/// </summary>
 public class ProductRouters
 {
+    /// <summary>
+    /// Mapeia endpoints para gestão de produtos e consulta de estoque bruto.
+    /// </summary>
+    /// <param name="app">WebApplication para mapeamento.</param>
     public async Task Routers(WebApplication app)
     {
         app.MapGet("/estoque/get", async Task<IResult> (IServiceProduct service) =>

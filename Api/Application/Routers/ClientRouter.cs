@@ -5,10 +5,16 @@ using Dto;
 
 namespace Api.Routers;
 
+/// <summary>
+/// Responsável por gerenciar as rotas relacionadas aos clientes.
+/// </summary>
 public class  ClientRouter
 {
     
-    
+    /// <summary>
+    /// Define os endpoints de cliente na aplicação (GET, POST, PUT, DELETE).
+    /// </summary>
+    /// <param name="app">Instância do WebApplication para mapear as rotas.</param>
     public  async  Task Routers(WebApplication app)
     {
         

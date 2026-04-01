@@ -3,10 +3,16 @@ using Xunit;
 
 using Utils;
 
+/// <summary>
+/// Conjunto de testes para as utilidades de validação (CPF, Datas, Nomes).
+/// </summary>
 public class TestUtils
 {
     private static Validation validation=new ();
     
+    /// <summary>
+    /// Verifica se o validador aceita um CPF matematicamente correto.
+    /// </summary>
     [Fact]
     public  void TestCpfValido()
     {
@@ -18,6 +24,9 @@ public class TestUtils
         
        
     }
+    /// <summary>
+    /// Verifica se o validador rejeita CPFs com dígitos incorretos.
+    /// </summary>
     [Fact]
     public  void TestCpfInvalido()
     {
@@ -27,6 +36,9 @@ public class TestUtils
 
     }
     
+    /// <summary>
+    /// Testa se datas de nascimento futuras ou fora da faixa permitida são bloqueadas.
+    /// </summary>
     [Theory]
     [InlineData(2200)]
     [InlineData(1500)]
@@ -35,6 +47,9 @@ public class TestUtils
         Assert.Throws<InvalidNascimentoException>(() => validation.ValidateBirthYear(nascimento));
         
     }
+    /// <summary>
+    /// Testa se anos de nascimento válidos são aceitos.
+    /// </summary>
     [Fact]
     public void TestNascimentoValido()
     {

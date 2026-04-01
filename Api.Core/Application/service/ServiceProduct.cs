@@ -14,8 +14,15 @@ namespace Api.Core.Application.service
    Task<ProdutoDto> GetProdutId(int id);
    Task<bool> UpdateProduct(ProdutoDto campos, int id);
 }
+/// <summary>
+/// Lógica de negócio para a gestão de produtos e estoque.
+/// </summary>
 class ServiceProduct(IRepositoryProduct repo):IServiceProduct
 {
+    /// <summary>
+    /// Lista todos os produtos com informações completas.
+    /// </summary>
+    /// <returns>Objeto ListaProduct.</returns>
     public async Task<ListaProduct> GetAllProduct()
     {
        
@@ -28,6 +35,11 @@ class ServiceProduct(IRepositoryProduct repo):IServiceProduct
        throw new ReturnDataIsEmpty();
     }
 
+    /// <summary>
+    /// Adiciona um novo produto validando nome, código, quantidade, valor e lote.
+    /// </summary>
+    /// <param name="campos">DTO com dados do produto.</param>
+    /// <returns>True se adicionado com sucesso.</returns>
     public async Task<bool> AddProduct(ProdutoDto campos)
     {
         
@@ -65,6 +77,11 @@ class ServiceProduct(IRepositoryProduct repo):IServiceProduct
             
     }
 
+    /// <summary>
+    /// Remove um produto do sistema pelo ID.
+    /// </summary>
+    /// <param name="id">ID do produto.</param>
+    /// <returns>True se removido.</returns>
     public async Task<bool> DeleteProduct(int id)
     {
         if (await repo.DeleteProduct(id)==0)
@@ -75,6 +92,10 @@ class ServiceProduct(IRepositoryProduct repo):IServiceProduct
         return true;
     }
 
+    /// <summary>
+    /// Obtém uma lista simplificada do estoque (nome e quantidade).
+    /// </summary>
+    /// <returns>Objeto ListaProduct com dados de estoque.</returns>
     public async Task<ListaProduct> GetEstoque()
     {
         ListaProduct lista =await repo.GetEstoque();
@@ -86,6 +107,10 @@ class ServiceProduct(IRepositoryProduct repo):IServiceProduct
         return lista;
     }
 
+    /// <summary>
+    /// Obtém a lista de valores de revenda de todos os produtos.
+    /// </summary>
+    /// <returns>Lista de valores decimais.</returns>
     public async Task<List<decimal>> GetValorBruto()
     {
         List<decimal> lista =await repo.GetValorBruto();
@@ -98,6 +123,11 @@ class ServiceProduct(IRepositoryProduct repo):IServiceProduct
         return lista;
     }
 
+    /// <summary>
+    /// Busca um produto específico pelo ID.
+    /// </summary>
+    /// <param name="id">ID do produto.</param>
+    /// <returns>DTO do produto encontrado.</returns>
     public async Task<ProdutoDto> GetProdutId(int id)
     {
             ProdutoDto product= await  repo.GetProductById(id);
@@ -108,6 +138,12 @@ class ServiceProduct(IRepositoryProduct repo):IServiceProduct
             return product;
     }
 
+    /// <summary>
+    /// Atualiza os dados de um produto existente, validando as novas entradas.
+    /// </summary>
+    /// <param name="campos">Novos dados.</param>
+    /// <param name="id">ID do produto.</param>
+    /// <returns>True se atualizado.</returns>
     public async Task<bool> UpdateProduct(ProdutoDto campos,int id)
     {
         Validation validation = new();

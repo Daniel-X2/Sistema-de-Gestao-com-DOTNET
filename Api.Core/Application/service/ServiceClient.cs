@@ -13,8 +13,16 @@ namespace Api.Core.Application.service
         Task<bool> AddService(ClientDto campos);
         Task<bool> DeleteService(int id);
     }
+    /// <summary>
+    /// Implementação da lógica de negócio para gestão de clientes.
+    /// </summary>
     class ServiceClient(IRepositoryClient repo):IServiceClient
 {
+    /// <summary>
+    /// Recupera os dados de um cliente pelo seu ID.
+    /// </summary>
+    /// <param name="id">O ID do cliente no banco.</param>
+    /// <returns>Retorna um DTO com os dados do cliente.</returns>
     public async Task<ClientDto> GetByIdService(int id)
     {
         //falta adicionar esse aqui na rota
@@ -26,6 +34,10 @@ namespace Api.Core.Application.service
             return resultado;
  
     }
+    /// <summary>
+    /// Obtém uma lista contendo todos os clientes cadastrados.
+    /// </summary>
+    /// <returns>Objeto ListaClient com a lista de clientes.</returns>
     public async Task<ListaClient> GetAllService()//
     {
     
@@ -40,6 +52,11 @@ namespace Api.Core.Application.service
         throw new ReturnDataIsEmpty();
 
     }
+    /// <summary>
+    /// Valida os dados e adiciona um novo cliente ao sistema.
+    /// </summary>
+    /// <param name="campos">DTO contendo os campos do novo cliente.</param>
+    /// <returns>True se adicionado com sucesso.</returns>
     public async Task<bool> AddService(ClientDto campos)//
     {
        
@@ -63,6 +80,12 @@ namespace Api.Core.Application.service
         return true;
     }
 
+    /// <summary>
+    /// Atualiza as informações de um cliente existente.
+    /// </summary>
+    /// <param name="id">ID do cliente a ser atualizado.</param>
+    /// <param name="campos">Novos dados do cliente.</param>
+    /// <returns>StringBuilder contendo os campos que NÃO foram atualizados por falha na validação.</returns>
     public async Task<StringBuilder> UpdateService(int id,
         ClientDto campos)
     {
@@ -126,6 +149,11 @@ namespace Api.Core.Application.service
 
     }
 
+    /// <summary>
+    /// Remove permanentemente um cliente pelo ID.
+    /// </summary>
+    /// <param name="id">ID do cliente.</param>
+    /// <returns>True se deletado com sucesso.</returns>
     public async Task<bool> DeleteService(int id)//
     {
       if ( await repo.DeleteClient(id)==0)
@@ -135,6 +163,11 @@ namespace Api.Core.Application.service
       return true;
     }
 
+    /// <summary>
+    /// Valida se uma conta informada é válida e se já não existe no banco.
+    /// </summary>
+    /// <param name="account">Número da conta.</param>
+    /// <returns>True se for uma conta nova e válida.</returns>
     public async Task<bool> IsValidAccount(int account)
     {
         if (int.IsNegative(account) || account==0)

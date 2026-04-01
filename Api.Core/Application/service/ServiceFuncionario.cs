@@ -13,9 +13,16 @@ namespace Api.Core.Application.service
        Task<FuncionarioDto> GetByIdService(int id);
        Task<FuncionarioLoginDto> Admin(string cpf);
    }
+    /// <summary>
+    /// Gerencia a lógica de negócio referente aos funcionários (autenticação e CRUD).
+    /// </summary>
     public class  ServiceFuncionario(IRepositoryFuncionario repo):IServiceFuncionario
     {
        
+        /// <summary>
+        /// Retorna todos os funcionários cadastrados.
+        /// </summary>
+        /// <returns>ListaFuncionario com todos os registros.</returns>
         public async Task<ListaFuncionario> GetAll()
        {
            ListaFuncionario lista=new();
@@ -28,6 +35,11 @@ namespace Api.Core.Application.service
            return lista;
        }
 
+        /// <summary>
+        /// Busca as credenciais de um funcionário pelo CPF para validação de login.
+        /// </summary>
+        /// <param name="cpf">CPF do funcionário.</param>
+        /// <returns>Dados para login (hash da senha e status de admin).</returns>
         public async Task<FuncionarioLoginDto> Admin(string cpf)
         {
             
@@ -40,6 +52,11 @@ namespace Api.Core.Application.service
 
             return funcionario;
         }
+        /// <summary>
+        /// Cadastra um novo funcionário após validar CPF, nome e ano de nascimento.
+        /// </summary>
+        /// <param name="campos">DTO com dados do funcionário.</param>
+        /// <returns>True se cadastrado.</returns>
         public async Task<bool> AddService(FuncionarioDto campos)
        {
            Validation verificador = new();
@@ -63,6 +80,12 @@ namespace Api.Core.Application.service
            throw new ErroAddToDatabaseException();
        }
 
+        /// <summary>
+        /// Atualiza os dados de um funcionário, mantendo valores originais se as novas entradas forem inválidas.
+        /// </summary>
+        /// <param name="campos">DTO com novos dados.</param>
+        /// <param name="id">ID do funcionário.</param>
+        /// <returns>True se atualizado.</returns>
         public async Task<bool> UpdateFuncionarioService(FuncionarioDto campos,int id)
         {
             
@@ -113,6 +136,11 @@ namespace Api.Core.Application.service
             return true;
         }
     
+        /// <summary>
+        /// Exclui um funcionário pelo ID.
+        /// </summary>
+        /// <param name="id">ID do funcionário.</param>
+        /// <returns>True se excluído.</returns>
         public async Task<bool> DeleteFuncionarioService(int id)
         {
             if(await repo.DeleteFuncionario(id)>=1)
@@ -122,6 +150,11 @@ namespace Api.Core.Application.service
 
             throw new InvalidIdException(id);
         }
+        /// <summary>
+        /// Obtém os detalhes de um funcionário pelo ID.
+        /// </summary>
+        /// <param name="id">ID do funcionário.</param>
+        /// <returns>DTO com dados do funcionário.</returns>
         public async Task<FuncionarioDto> GetByIdService(int id)
         {
             

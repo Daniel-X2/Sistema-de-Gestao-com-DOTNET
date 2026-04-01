@@ -560,11 +560,11 @@
             },
             "Swashbuckle.AspNetCore.SwaggerGen": {
               "target": "Package",
-              "version": "[10.1.6, )"
+              "version": "[6.8.1, )"
             },
             "Swashbuckle.AspNetCore.SwaggerUI": {
               "target": "Package",
-              "version": "[10.1.6, )"
+              "version": "[6.8.1, )"
             }
           },
           "imports": [

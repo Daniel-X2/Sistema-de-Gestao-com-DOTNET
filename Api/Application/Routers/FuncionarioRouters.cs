@@ -5,9 +5,16 @@ using Dto;
 using auth.Services;
 namespace Api.Routers;
 
+/// <summary>
+/// Responsável pelas rotas de funcionários, incluindo autenticação.
+/// </summary>
 public class FuncionarioRouters
 {
         
+        /// <summary>
+        /// Define as rotas para login, listagem, cadastro e exclusão de funcionários.
+        /// </summary>
+        /// <param name="app">WebApplication para mapeamento.</param>
         public  async  Task Router(WebApplication app)
         {
             app.MapPost("/login/", async Task<IResult> (FuncionarioJsonBody body,IServiceFuncionario service,IConfiguration config,TokenService token) =>
