@@ -15,10 +15,10 @@ public class TestServiceProduct
         
         var product = new ListaProduct();
         product.Product.Add(ReturnDados.ReturnProduct());
-        moq.Setup(repo => repo.GetAllProduct(TODO, TODO)).ReturnsAsync(product);
+        moq.Setup(repo => repo.GetAllProduct(1, 10)).ReturnsAsync(product);
         
         var n1 =new  ServiceProduct(moq.Object);
-        await n1.GetAllProduct(TODO, TODO);
+        await n1.GetAllProduct(1, 10);
     }
     [Fact]
     public async Task TestGetProductInvalido()
@@ -26,10 +26,10 @@ public class TestServiceProduct
         
         var product = new ListaProduct();
        
-        moq.Setup(repo => repo.GetAllProduct(TODO, TODO)).ReturnsAsync(product);
+        moq.Setup(repo => repo.GetAllProduct(1, 10)).ReturnsAsync(product);
         
         var n1 =new  ServiceProduct(moq.Object);
-        await  Assert.ThrowsAsync<ReturnDataIsEmpty>(async () => await n1.GetAllProduct(TODO, TODO));
+        await  Assert.ThrowsAsync<ReturnDataIsEmpty>(async () => await n1.GetAllProduct(1, 10));
         
     }
    [Fact]

@@ -1,0 +1,169 @@
+2026-04-01 21:15:40.614 -03:00 [INF] User profile is available. Using '/home/daniel/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-04-01 21:15:40.976 -03:00 [INF] Now listening on: http://0.0.0.0:5153
+2026-04-01 21:15:40.978 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-01 21:15:40.979 -03:00 [INF] Hosting environment: Development
+2026-04-01 21:15:40.979 -03:00 [INF] Content root path: /home/daniel/Desktop/API-Gestao-Assincrona-sem-docker/Api
+2026-04-01 21:15:51.144 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/ - null null
+2026-04-01 21:15:51.279 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/ - 301 0 null 136.4981ms
+2026-04-01 21:15:51.305 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/index.html - null null
+2026-04-01 21:15:51.567 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/index.html - 200 null text/html;charset=utf-8 262.7619ms
+2026-04-01 21:15:51.843 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/index.js - null null
+2026-04-01 21:15:51.860 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/index.js - 200 null application/javascript;charset=utf-8 17.0278ms
+2026-04-01 21:15:52.394 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/swagger/v1/swagger.json - null null
+2026-04-01 21:15:52.406 -03:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-04-01 21:15:52.625 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 230.871ms
+2026-04-01 21:16:04.914 -03:00 [INF] Request starting HTTP/1.1 POST http://127.0.0.1:5153/login - application/json 42
+2026-04-01 21:16:05.242 -03:00 [WRN] Failed to determine the https port for redirect.
+2026-04-01 21:16:05.246 -03:00 [INF] Executing endpoint 'HTTP: POST /login/'
+2026-04-01 21:16:05.768 -03:00 [INF] Executed endpoint 'HTTP: POST /login/'
+2026-04-01 21:16:05.769 -03:00 [ERR] Erro inesperado: Failed to connect to 127.0.0.1:5433
+2026-04-01 21:16:05.776 -03:00 [INF] HTTP POST /login responded 200 in 539.0272 ms
+2026-04-01 21:16:05.787 -03:00 [INF] Request finished HTTP/1.1 POST http://127.0.0.1:5153/login - 200 0 null 872.8143ms
+2026-04-01 21:16:15.829 -03:00 [INF] Application is shutting down...
+2026-04-01 21:19:32.405 -03:00 [INF] User profile is available. Using '/home/daniel/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-04-01 21:19:32.801 -03:00 [INF] Now listening on: http://0.0.0.0:5153
+2026-04-01 21:19:32.804 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-01 21:19:32.804 -03:00 [INF] Hosting environment: Development
+2026-04-01 21:19:32.804 -03:00 [INF] Content root path: /home/daniel/Desktop/API-Gestao-Assincrona-sem-docker/Api
+2026-04-01 21:19:39.215 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/ - null null
+2026-04-01 21:19:39.479 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/ - 301 0 null 264.1575ms
+2026-04-01 21:19:39.496 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/index.html - null null
+2026-04-01 21:19:39.598 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/index.html - 200 null text/html;charset=utf-8 102.6019ms
+2026-04-01 21:19:39.669 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/index.js - null null
+2026-04-01 21:19:39.674 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/index.js - 200 null application/javascript;charset=utf-8 4.8836ms
+2026-04-01 21:19:40.596 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/swagger/v1/swagger.json - null null
+2026-04-01 21:19:40.611 -03:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-04-01 21:19:40.803 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 206.4104ms
+2026-04-01 21:19:46.214 -03:00 [INF] Request starting HTTP/1.1 POST http://127.0.0.1:5153/login - application/json 42
+2026-04-01 21:19:46.268 -03:00 [WRN] Failed to determine the https port for redirect.
+2026-04-01 21:19:46.271 -03:00 [INF] Executing endpoint 'HTTP: POST /login/'
+2026-04-01 21:19:46.849 -03:00 [INF] Executed endpoint 'HTTP: POST /login/'
+2026-04-01 21:19:46.868 -03:00 [ERR] Cpf Invalido o Cpf string nao e valido
+2026-04-01 21:19:46.874 -03:00 [INF] HTTP POST /login responded 422 in 605.9441 ms
+2026-04-01 21:19:46.884 -03:00 [INF] Request finished HTTP/1.1 POST http://127.0.0.1:5153/login - 422 null application/json; charset=utf-8 670.6471ms
+2026-04-01 21:20:52.143 -03:00 [INF] Application is shutting down...
+2026-04-01 22:06:58.733 -03:00 [INF] User profile is available. Using '/home/daniel/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-04-01 22:06:59.300 -03:00 [INF] Now listening on: http://0.0.0.0:5153
+2026-04-01 22:06:59.303 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-01 22:06:59.304 -03:00 [INF] Hosting environment: Development
+2026-04-01 22:06:59.304 -03:00 [INF] Content root path: /home/daniel/Desktop/API-Gestao-Assincrona-sem-docker/Api
+2026-04-01 22:07:04.537 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/ - null null
+2026-04-01 22:07:04.646 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/ - 301 0 null 109.3926ms
+2026-04-01 22:07:04.665 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/index.html - null null
+2026-04-01 22:07:04.808 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/index.html - 200 null text/html;charset=utf-8 144.9777ms
+2026-04-01 22:07:04.871 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/swagger-ui.css - null null
+2026-04-01 22:07:04.873 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/index.css - null null
+2026-04-01 22:07:04.873 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/swagger-ui-standalone-preset.js - null null
+2026-04-01 22:07:04.911 -03:00 [INF] Sending file. Request path: '/index.css'. Physical path: 'N/A'
+2026-04-01 22:07:04.912 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/index.css - 200 202 text/css 38.5809ms
+2026-04-01 22:07:04.922 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/index.js - null null
+2026-04-01 22:07:04.923 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/index.js - 200 null application/javascript;charset=utf-8 0.9817ms
+2026-04-01 22:07:04.929 -03:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2026-04-01 22:07:04.931 -03:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2026-04-01 22:07:04.936 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/swagger-ui.css - 200 152034 text/css 64.7705ms
+2026-04-01 22:07:04.936 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/swagger-ui-standalone-preset.js - 200 230293 text/javascript 63.6048ms
+2026-04-01 22:07:05.627 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/favicon-16x16.png - null null
+2026-04-01 22:07:05.630 -03:00 [INF] Sending file. Request path: '/favicon-16x16.png'. Physical path: 'N/A'
+2026-04-01 22:07:05.630 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/favicon-16x16.png - 200 665 image/png 3.4714ms
+2026-04-01 22:07:05.728 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/swagger/v1/swagger.json - null null
+2026-04-01 22:07:05.741 -03:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-04-01 22:07:06.116 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 388.4094ms
+2026-04-01 22:07:44.279 -03:00 [INF] Application is shutting down...
+2026-04-01 22:31:36.519 -03:00 [INF] User profile is available. Using '/home/daniel/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-04-01 22:31:39.160 -03:00 [INF] Now listening on: http://0.0.0.0:5153
+2026-04-01 22:31:39.162 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-01 22:31:39.162 -03:00 [INF] Hosting environment: Development
+2026-04-01 22:31:39.163 -03:00 [INF] Content root path: /home/daniel/Desktop/API-Gestao-Assincrona-sem-docker/Api
+2026-04-01 22:32:16.145 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/ - null null
+2026-04-01 22:32:16.294 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/ - 301 0 null 140.8617ms
+2026-04-01 22:32:16.338 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/index.html - null null
+2026-04-01 22:32:16.445 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/index.html - 200 null text/html;charset=utf-8 107.0274ms
+2026-04-01 22:32:16.587 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/swagger-ui.css - null null
+2026-04-01 22:32:16.593 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/index.css - null null
+2026-04-01 22:32:16.595 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/swagger-ui-standalone-preset.js - null null
+2026-04-01 22:32:16.601 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/index.js - null null
+2026-04-01 22:32:16.635 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/index.js - 200 null application/javascript;charset=utf-8 33.8725ms
+2026-04-01 22:32:16.654 -03:00 [INF] Sending file. Request path: '/index.css'. Physical path: 'N/A'
+2026-04-01 22:32:16.655 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/index.css - 200 202 text/css 61.5433ms
+2026-04-01 22:32:16.657 -03:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2026-04-01 22:32:16.657 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/swagger-ui.css - 499 152034 text/css 70.025ms
+2026-04-01 22:32:16.692 -03:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2026-04-01 22:32:16.694 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/swagger-ui-standalone-preset.js - 200 230293 text/javascript 98.6607ms
+2026-04-01 22:32:17.136 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/favicon-16x16.png - null null
+2026-04-01 22:32:17.136 -03:00 [INF] Sending file. Request path: '/favicon-16x16.png'. Physical path: 'N/A'
+2026-04-01 22:32:17.141 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/favicon-16x16.png - 200 665 image/png 5.0373ms
+2026-04-01 22:32:17.201 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/swagger/v1/swagger.json - null null
+2026-04-01 22:32:17.291 -03:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-04-01 22:32:17.702 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 500.7053ms
+2026-04-01 22:32:41.378 -03:00 [INF] Request starting HTTP/1.1 POST http://127.0.0.1:5153/login - application/json 44
+2026-04-01 22:32:41.606 -03:00 [WRN] Failed to determine the https port for redirect.
+2026-04-01 22:32:41.609 -03:00 [INF] Executing endpoint 'HTTP: POST /login/'
+2026-04-01 22:32:42.962 -03:00 [INF] Executed endpoint 'HTTP: POST /login/'
+2026-04-01 22:32:42.963 -03:00 [ERR] Erro inesperado: IDX10720: Unable to create KeyedHashAlgorithm for algorithm 'http://www.w3.org/2001/04/xmldsig-more#hmac-sha256', the key size must be greater than: '256' bits, key has '168' bits. (Parameter 'keyBytes')
+2026-04-01 22:32:42.965 -03:00 [INF] HTTP POST /login responded 200 in 1361.4975 ms
+2026-04-01 22:32:42.967 -03:00 [INF] Request finished HTTP/1.1 POST http://127.0.0.1:5153/login - 200 0 null 1588.9641ms
+2026-04-01 22:33:40.583 -03:00 [INF] Application is shutting down...
+2026-04-01 22:36:37.533 -03:00 [INF] User profile is available. Using '/home/daniel/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-04-01 22:36:39.427 -03:00 [INF] Now listening on: http://0.0.0.0:5153
+2026-04-01 22:36:39.435 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-01 22:36:39.436 -03:00 [INF] Hosting environment: Development
+2026-04-01 22:36:39.439 -03:00 [INF] Content root path: /home/daniel/Desktop/API-Gestao-Assincrona-sem-docker/Api
+2026-04-01 22:36:46.882 -03:00 [INF] Request starting HTTP/1.1 POST http://127.0.0.1:5153/login - application/json 44
+2026-04-01 22:36:47.171 -03:00 [WRN] Failed to determine the https port for redirect.
+2026-04-01 22:36:47.175 -03:00 [INF] Executing endpoint 'HTTP: POST /login/'
+2026-04-01 22:38:03.163 -03:00 [INF] Executed endpoint 'HTTP: POST /login/'
+2026-04-01 22:38:03.222 -03:00 [ERR] Erro inesperado: IDX10720: Unable to create KeyedHashAlgorithm for algorithm 'http://www.w3.org/2001/04/xmldsig-more#hmac-sha256', the key size must be greater than: '256' bits, key has '168' bits. (Parameter 'keyBytes')
+2026-04-01 22:38:03.229 -03:00 [INF] HTTP POST /login responded 200 in 76060.4959 ms
+2026-04-01 22:38:03.281 -03:00 [INF] Request finished HTTP/1.1 POST http://127.0.0.1:5153/login - 200 0 null 76400.6764ms
+2026-04-01 22:39:41.370 -03:00 [INF] User profile is available. Using '/home/daniel/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-04-01 22:39:41.970 -03:00 [INF] Now listening on: http://0.0.0.0:5153
+2026-04-01 22:39:41.973 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-01 22:39:41.973 -03:00 [INF] Hosting environment: Development
+2026-04-01 22:39:41.973 -03:00 [INF] Content root path: /home/daniel/Desktop/API-Gestao-Assincrona-sem-docker/Api
+2026-04-01 22:39:51.038 -03:00 [INF] Request starting HTTP/1.1 POST http://127.0.0.1:5153/login - application/json 44
+2026-04-01 22:39:51.413 -03:00 [WRN] Failed to determine the https port for redirect.
+2026-04-01 22:39:51.418 -03:00 [INF] Executing endpoint 'HTTP: POST /login/'
+2026-04-01 22:40:03.036 -03:00 [INF] Setting HTTP status code 200.
+2026-04-01 22:40:03.044 -03:00 [INF] Writing value of type 'String' as Json.
+2026-04-01 22:40:03.084 -03:00 [INF] Executed endpoint 'HTTP: POST /login/'
+2026-04-01 22:40:03.092 -03:00 [INF] HTTP POST /login responded 200 in 11681.1080 ms
+2026-04-01 22:40:03.108 -03:00 [INF] Request finished HTTP/1.1 POST http://127.0.0.1:5153/login - 200 null application/json; charset=utf-8 12071.2971ms
+2026-04-01 22:40:38.511 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/client/get?page=1&limit=100 - null null
+2026-04-01 22:40:38.615 -03:00 [INF] Executing endpoint 'HTTP: GET /client/get/'
+2026-04-01 22:40:38.759 -03:00 [INF] Executed endpoint 'HTTP: GET /client/get/'
+2026-04-01 22:40:38.823 -03:00 [ERR] Sem dados Correspondentes Exception of type 'ReturnDataIsEmpty' was thrown.
+2026-04-01 22:40:38.823 -03:00 [INF] HTTP GET /client/get responded 400 in 208.0492 ms
+2026-04-01 22:40:38.824 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/client/get?page=1&limit=100 - 400 null application/json; charset=utf-8 313.8276ms
+2026-04-01 22:42:07.524 -03:00 [INF] Request starting HTTP/1.1 POST http://127.0.0.1:5153/client/add - application/json 80
+2026-04-01 22:42:07.529 -03:00 [INF] Executing endpoint 'HTTP: POST /client/add/'
+2026-04-01 22:42:07.715 -03:00 [INF] Setting HTTP status code 200.
+2026-04-01 22:42:07.718 -03:00 [INF] Writing value of type '<>f__AnonymousType2`1' as Json.
+2026-04-01 22:42:07.720 -03:00 [INF] Executed endpoint 'HTTP: POST /client/add/'
+2026-04-01 22:42:07.720 -03:00 [INF] HTTP POST /client/add responded 200 in 190.7680 ms
+2026-04-01 22:42:07.720 -03:00 [INF] Request finished HTTP/1.1 POST http://127.0.0.1:5153/client/add - 200 null application/json; charset=utf-8 195.7771ms
+2026-04-01 22:42:17.394 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/client/get?page=1&limit=100 - null null
+2026-04-01 22:42:17.400 -03:00 [INF] Executing endpoint 'HTTP: GET /client/get/'
+2026-04-01 22:42:17.404 -03:00 [INF] Setting HTTP status code 200.
+2026-04-01 22:42:17.410 -03:00 [INF] Writing value of type 'ListaClient' as Json.
+2026-04-01 22:42:17.412 -03:00 [INF] Executed endpoint 'HTTP: GET /client/get/'
+2026-04-01 22:42:17.412 -03:00 [INF] HTTP GET /client/get responded 200 in 12.1341 ms
+2026-04-01 22:42:17.414 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/client/get?page=1&limit=100 - 200 null application/json; charset=utf-8 20.0791ms
+2026-04-01 22:42:23.974 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/client/get?page=2&limit=100 - null null
+2026-04-01 22:42:23.975 -03:00 [INF] Executing endpoint 'HTTP: GET /client/get/'
+2026-04-01 22:42:24.026 -03:00 [INF] Executed endpoint 'HTTP: GET /client/get/'
+2026-04-01 22:42:24.064 -03:00 [ERR] Sem dados Correspondentes Exception of type 'ReturnDataIsEmpty' was thrown.
+2026-04-01 22:42:24.064 -03:00 [INF] HTTP GET /client/get responded 400 in 89.0856 ms
+2026-04-01 22:42:24.064 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/client/get?page=2&limit=100 - 400 null application/json; charset=utf-8 90.2668ms
+2026-04-01 22:42:40.059 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/funcionario/get?page=1&limit=100 - null null
+2026-04-01 22:42:40.061 -03:00 [INF] Executing endpoint 'HTTP: GET /funcionario/get'
+2026-04-01 22:42:40.069 -03:00 [INF] Setting HTTP status code 200.
+2026-04-01 22:42:40.071 -03:00 [INF] Writing value of type 'ListaFuncionario' as Json.
+2026-04-01 22:42:40.073 -03:00 [INF] Executed endpoint 'HTTP: GET /funcionario/get'
+2026-04-01 22:42:40.073 -03:00 [INF] HTTP GET /funcionario/get responded 200 in 12.1864 ms
+2026-04-01 22:42:40.073 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/funcionario/get?page=1&limit=100 - 200 null application/json; charset=utf-8 14.7684ms
+2026-04-01 22:42:52.090 -03:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5153/funcionario/get?page=2&limit=100 - null null
+2026-04-01 22:42:52.091 -03:00 [INF] Executing endpoint 'HTTP: GET /funcionario/get'
+2026-04-01 22:42:52.141 -03:00 [INF] Executed endpoint 'HTTP: GET /funcionario/get'
+2026-04-01 22:42:52.177 -03:00 [ERR] Sem dados Correspondentes Exception of type 'ReturnDataIsEmpty' was thrown.
+2026-04-01 22:42:52.177 -03:00 [INF] HTTP GET /funcionario/get responded 400 in 85.4752 ms
+2026-04-01 22:42:52.177 -03:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5153/funcionario/get?page=2&limit=100 - 400 null application/json; charset=utf-8 87.308ms

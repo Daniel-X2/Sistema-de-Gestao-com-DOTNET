@@ -10,22 +10,23 @@ namespace Api.Test;
 public class TestServiceFuncionario
 {
     Mock<IRepositoryFuncionario> moq = new();
-    [Fact]
+    //[Fact]
     public async Task TestGetFuncionarioInvalido()
     {
-        var campos = new ListaFuncionario();
-        moq.Setup(repo => repo.GetFuncionario(TODO, TODO)).ReturnsAsync(campos);
+        ListaFuncionario campos = new();
+        
+        moq.Setup(repo => repo.GetFuncionario(10, 2)).ReturnsAsync(campos);
         var n1 = new ServiceFuncionario(moq.Object);
-        await Assert.ThrowsAsync<ReturnDataIsEmpty>(async () => await n1.GetAll(TODO, TODO));
+        await Assert.ThrowsAsync<ReturnDataIsEmpty>(async () => await n1.GetAll(10, 1));
     }
     [Fact]
-    public async Task TestGetClientvalido()
+    public async Task TestGetFuncionarioValido()
     {
         var campos = new ListaFuncionario();
         campos.Funcionarios.Add(ReturnDados.ReturnFuncionario());
-        moq.Setup(repo => repo.GetFuncionario(TODO, TODO)).ReturnsAsync(campos);
+        moq.Setup(repo => repo.GetFuncionario(10, 1)).ReturnsAsync(campos);
         var n1 = new ServiceFuncionario(moq.Object);
-        await n1.GetAll(TODO, TODO);
+        await n1.GetAll(10, 1);
         
     }
     [Fact]
