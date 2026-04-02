@@ -97,6 +97,8 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception ex)
         {
+         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+    await context.Response.WriteAsJsonAsync(new { erro = "erro inesperado" });
             _logger.LogError($"Erro inesperado: {ex.Message}");
         }
     }

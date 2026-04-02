@@ -2,22 +2,33 @@
 
 API REST assíncrona desenvolvida em ASP.NET Core para gestão de clientes, funcionários e produtos, utilizando PostgreSQL como banco de dados. O projeto segue uma arquitetura modular com separação de responsabilidades entre as camadas de roteamento, serviços e repositórios.
 
+API disponível em produção:
+```
+https://api-gestao-assincrona.up.railway.app/
+```
+
+A documentação interativa (Swagger) está acessível na raiz da URL. Use o login padrão para gerar o token e testar os endpoints diretamente.
+
 ## Tecnologias
 
 - **Plataforma**: .NET / ASP.NET Core (Minimal APIs)
 - **Banco de Dados**: PostgreSQL
 - **Acesso a Dados**: ADO.NET com Npgsql
+- **Autenticação**: JWT Bearer + RBAC (roles Admin/User)
+- **Segurança**: BCrypt para hash de senhas, Rate Limiting
+- **Logs**: Serilog (console + arquivo rotativo diário)
 - **Configuração**: DotNetEnv (variáveis de ambiente via `.env`)
 - **Testes**: xUnit, Moq, Bogus
 - **Padrões**: Injeção de Dependência, Repository Pattern, Service Layer, Middleware de Exceções
 
 ## Estrutura do Projeto
-
 ```
 ├── Api/                        # Ponto de entrada, rotas, middleware
 │   ├── Application/
 │   │   ├── Routers/            # Definição dos endpoints (Minimal APIs)
 │   │   └── middleware/         # Tratamento centralizado de exceções
+│   ├── Auth/                   # JWT TokenService e modelo de usuário
+│   ├── Crypt/                  # BCrypt (hash e verificação de senha)
 │   └── Program.cs
 │
 ├── Api.Core/                   # Lógica de negócio e acesso a dados
@@ -35,34 +46,41 @@ API REST assíncrona desenvolvida em ASP.NET Core para gestão de clientes, func
 │   ├── TestServiceProduct.cs
 │   └── TestUtils.cs
 │
-├── tabelas/
+├── Docker/
+│   ├── docker-compose.yml
 │   └── sql.sql                 # Script de inicialização do banco
-└── docker-compose.yml
+└── Dockerfile                  # Multi-stage build com usuário não-root
 ```
 
 ## Funcionalidades
 
+### Autenticação
+- Login via CPF + senha com geração de token JWT
+- Roles: `Admin` (acesso total) e `User` (acesso restrito)
+- Senhas armazenadas com BCrypt
+- Rate limiting: máximo 5 requisições por minuto por IP
+
 ### Clientes (`/client/`)
 - Cadastro com validação de CPF (algoritmo próprio), conta e nome
 - Atualização parcial — campos inválidos são mantidos com o valor anterior e retornados na resposta
-- Listagem completa e busca por ID
+- Listagem paginada e busca por ID
 - Remoção por ID
 - Suporte a marcação de cliente VIP
 
 ### Funcionários (`/funcionario/`)
 - Cadastro com validação de CPF, nome e ano de nascimento (18–85 anos)
 - Controle de atestados e privilégios administrativos
-- CRUD completo
+- Listagem paginada e CRUD completo
 
 ### Produtos (`/product/`)
 - Cadastro com validação de código, lote, quantidade e valor de revenda
-- Consulta de estoque e valor bruto total (retornado como `decimal`)
+- Consulta de estoque e valor bruto total
 - Atualização parcial — campos inválidos mantêm o valor anterior
-- CRUD completo
+- Listagem paginada e CRUD completo
 
 ## Arquitetura de Tratamento de Erros
 
-Middleware centralizado captura todas as exceções e retorna respostas padronizadas em JSON:
+Middleware centralizado captura todas as exceções, registra via Serilog e retorna respostas padronizadas em JSON:
 
 | Exceção | Status HTTP |
 |---|---|
@@ -77,7 +95,16 @@ Middleware centralizado captura todas as exceções e retorna respostas padroniz
 | `InvalidLoteException` | 400 Bad Request |
 | `ErroAddToDatabaseException` | 400 Bad Request |
 | `ErroUpdateToDatabaseException` | 400 Bad Request |
+| `InvalidPassword` | 401 Unauthorized |
 | `InvalidConnection` | 500 Internal Server Error |
+
+## Logs
+
+Gerados automaticamente via Serilog em dois destinos:
+- **Console** — visível em tempo real
+- **Arquivo** — `./Logs/logs.txt` com rotação diária
+
+Cada requisição é registrada automaticamente com método HTTP, rota, status code e tempo de resposta.
 
 ## Testes
 
@@ -86,7 +113,6 @@ Os testes cobrem a camada de serviço com mocks dos repositórios, sem necessida
 - **Moq** — mock das interfaces de repositório
 - **Bogus** — geração de dados falsos para os testes
 - **xUnit** — execução dos testes
-
 ```bash
 dotnet test
 ```
@@ -95,41 +121,65 @@ dotnet test
 
 ### 1. Variáveis de Ambiente
 
-Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
-
+Crie um arquivo `.env` com as seguintes variáveis:
 ```env
-DB_CONNECTION=Host=localhost;Database=nome;Username=user;Password=senha
+DB_CONNECTION=Host=postgres_db;Database=postgres;Username=postgres;Password=senha
 POSTGRES_PASSWORD=senha
-JWT_KEY=Key
+JWT_KEY=sua_chave_secreta
 JWT_ISSUER=MinhaApi
 JWT_AUDIENCE=MeuClient
-JWT_EXPIRES=2
-
 ```
 
-### 2. Banco de Dados
+### 2. Execução com Docker (recomendado)
 
-O script `tabelas/sql.sql` cria as tabelas `cliente`, `funcionario` e `produto` automaticamente ao subir via Docker.
-
-### 3. Execução com Docker (recomendado)
-
+Crie o `.env` dentro da pasta `Docker/` e execute:
 ```bash
+cd Docker
 docker-compose up -d
 ```
 
-### 4. Execução manual
+A API sobe na porta `5153`. O banco é inicializado automaticamente com as tabelas e um funcionário admin padrão.
 
+### 3. Execução manual
+
+Crie o `.env` dentro da pasta `Api/` e execute:
 ```bash
 dotnet run --project Api
 ```
 
+### 4. Login padrão
+
+Um funcionário admin é inserido automaticamente ao inicializar o banco:
+```json
+{
+  "cpf": "12345678911",
+  "senha": "123"
+}
+```
+
+## Paginação
+
+Todos os endpoints de listagem suportam paginação via query params:
+```
+GET /client/get?page=1&limit=10
+GET /funcionario/get?page=1&limit=10
+GET /product/get?page=1&limit=10
+GET /estoque/get?page=1&limit=10
+```
+
 ## Endpoints
+
+### Autenticação
+
+| Método | Rota | Descrição |
+|---|---|---|
+| POST | `/login/` | Gera token JWT |
 
 ### Clientes
 
 | Método | Rota | Descrição |
 |---|---|---|
-| GET | `/client/get/` | Lista todos os clientes |
+| GET | `/client/get/` | Lista clientes (paginado) |
 | POST | `/client/add/` | Adiciona um cliente |
 | PUT | `/client/update/{id}/` | Atualiza um cliente |
 | DELETE | `/client/delete/{id}` | Remove um cliente |
@@ -138,7 +188,7 @@ dotnet run --project Api
 
 | Método | Rota | Descrição |
 |---|---|---|
-| GET | `/funcionario/get` | Lista todos os funcionários |
+| GET | `/funcionario/get` | Lista funcionários (paginado) |
 | GET | `/funcionario/get/{id}` | Busca funcionário por ID |
 | POST | `/funcionario/add/` | Adiciona um funcionário |
 | PUT | `/funcionario/update/{id}/` | Atualiza um funcionário |
@@ -148,12 +198,10 @@ dotnet run --project Api
 
 | Método | Rota | Descrição |
 |---|---|---|
-| GET | `/product/get` | Lista todos os produtos |
+| GET | `/product/get` | Lista produtos (paginado) |
 | GET | `/product/get/{id}` | Busca produto por ID |
-| GET | `/estoque/get` | Consulta estoque (nome e quantidade) |
+| GET | `/estoque/get` | Consulta estoque (paginado) |
 | GET | `/estoque/valorBruto` | Lista valores de revenda |
 | POST | `/product/add` | Adiciona um produto |
 | PUT | `/product/update/{id}/` | Atualiza um produto |
 | DELETE | `/product/delete/{id}` | Remove um produto |
-
-
