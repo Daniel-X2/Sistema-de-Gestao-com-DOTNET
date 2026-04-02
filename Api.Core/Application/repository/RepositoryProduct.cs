@@ -10,8 +10,8 @@ namespace Api.Core.Application.repository
     // Os métodos são definidos como internal para restringir o acesso
     // direto ao repositório fora deste assembly.
     // A implementação usa public apenas para cumprir o contrato da interface.
-    internal Task<ListaProduct> GetAllProduct();
-    internal Task<ListaProduct> GetEstoque();
+    internal Task<ListaProduct> GetAllProduct(int limit, int page);
+    internal Task<ListaProduct> GetEstoque(int limit, int page);
     internal  Task<List<decimal>> GetValorBruto();
     internal  Task<int> AddProduct(ProdutoDto campos);
     internal Task<int> UpdateProduct(ProdutoDto campos, int id);
@@ -83,16 +83,23 @@ class RepositoryProduct(IConnect host):IRepositoryProduct
        bool resultado=(bool) await cmd.ExecuteScalarAsync();
        return resultado;
     }
+
     /// <summary>
     /// Lista todos os produtos com todos os detalhes.
     /// </summary>
+    /// <param name="limit"></param>
+    /// <param name="page"></param>
     /// <returns>ListaProduct com os registros.</returns>
-   public  async Task<ListaProduct> GetAllProduct()
+    public  async Task<ListaProduct> GetAllProduct(int limit, int page)
     {
-
+        
+        var offset = (page - 1) * limit;
+        
        await using NpgsqlConnection connect=host.Connect();;
        await connect.OpenAsync();
-       await using var cmd = new NpgsqlCommand("SELECT * FROM produto",connect);
+       await using var cmd = new NpgsqlCommand("SELECT * FROM produto LIMIT @limit OFFSET @offset",connect);
+       cmd.Parameters.AddWithValue("limit", limit);
+       cmd.Parameters.AddWithValue("offset", offset);
        await using var read= await  cmd.ExecuteReaderAsync();
        ListaProduct lista=new();
 
@@ -108,17 +115,24 @@ class RepositoryProduct(IConnect host):IRepositoryProduct
         }
         return lista;
      }
+
     /// <summary>
     /// Consulta resumida de estoque (apenas nome e quantidade).
     /// </summary>
+    /// <param name="limit"></param>
+    /// <param name="page"></param>
     /// <returns>ListaProduct com dados parciais.</returns>
-    public  async Task<ListaProduct> GetEstoque()
+    public  async Task<ListaProduct> GetEstoque(int limit,int page)
     {
-
+        var offset = (page - 1) * limit;
+        
+    
        await using NpgsqlConnection connect=host.Connect();
        await connect.OpenAsync();
 
-       await using var cmd=new NpgsqlCommand("SELECT nome,quantidade FROM produto",connect);
+       await using var cmd=new NpgsqlCommand("SELECT nome,quantidade FROM produto LIMIT @limit OFFSET @offset",connect);
+       cmd.Parameters.AddWithValue("limit", limit);
+       cmd.Parameters.AddWithValue("offset", offset);
        var read=await cmd.ExecuteReaderAsync();
         ListaProduct lista=new();
         while(await read.ReadAsync())
@@ -137,7 +151,7 @@ class RepositoryProduct(IConnect host):IRepositoryProduct
     /// <returns>Lista de valores decimais.</returns>
     public async Task<List<decimal>> GetValorBruto()
     {
-
+        
       await using  NpgsqlConnection connect=host.Connect();
       await connect.OpenAsync();
 

@@ -1,10 +1,12 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Api.Core.Application.utils;
+
 using Microsoft.AspNetCore.RateLimiting;
 using auth.Services;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 
 namespace Api
@@ -16,6 +18,8 @@ namespace Api
         
         public static async Task Main()
         {
+
+            Log.Logger = new LoggerConfiguration().WriteTo.Console().WriteTo.File("./Logs/logs.txt",rollingInterval:RollingInterval.Day).CreateLogger();
             Load.LoadEnv();
             WebApplicationBuilder builder = WebApplication.CreateBuilder();
             builder.Services.AddRateLimiter(option =>
@@ -52,8 +56,8 @@ namespace Api
                 options.AddPolicy("Admin",policy=>policy.RequireRole("Admin"));
                 options.AddPolicy("User",policy=>policy.RequireRole("User"));
             });
-            
-            //builder.Services.
+
+            builder.Host.UseSerilog();
             builder.Services.AddScoped<TokenService>();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
@@ -95,7 +99,7 @@ namespace Api
 
             app.UseAuthentication();
             app.UseAuthorization();
-            
+            app.UseSerilogRequestLogging();
             app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseRateLimiter();
             await new Routers.Routers().InitRouters(app);

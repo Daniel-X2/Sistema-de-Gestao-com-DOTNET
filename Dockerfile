@@ -1,9 +1,9 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 
-WORKDIR /Api
+WORKDIR ./Api
 
 COPY . .
-RUN dotnet publish Api/Api.csproj -c release -o /app
+RUN dotnet publish ./Api/Api.csproj -c release -o /app
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app

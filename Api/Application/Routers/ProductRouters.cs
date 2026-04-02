@@ -15,16 +15,16 @@ public class ProductRouters
     /// <param name="app">WebApplication para mapeamento.</param>
     public async Task Routers(WebApplication app)
     {
-        app.MapGet("/estoque/get", async Task<IResult> (IServiceProduct service) =>
+        app.MapGet("/estoque/get", async Task<IResult> (IServiceProduct service,int page=1,int limit=100) =>
         { 
-            ListaProduct lista= await service.GetEstoque();
+            ListaProduct lista= await service.GetEstoque(limit, page);
             
             return Results.Ok(lista);
         }).WithTags("Product").WithSummary("Lista Quantidade e nome dos produtos no estoque").WithDescription("Retorna uma lista resumida contendo apenas o nome e a quantidade disponível de cada produto no estoque.").RequireAuthorization();
 
-        app.MapGet("/product/get", async Task<IResult> (IServiceProduct service) =>
+        app.MapGet("/product/get", async Task<IResult> (IServiceProduct service,int page=1,int limit=100) =>
         {
-            ListaProduct lista = await service.GetAllProduct();
+            ListaProduct lista = await service.GetAllProduct(limit, page);
             return Results.Ok(lista);
             
         }).WithTags("Product").WithSummary("Lista todos os produtos").WithDescription("Retorna os detalhes completos de todos os produtos cadastrados no catálogo.").RequireAuthorization();

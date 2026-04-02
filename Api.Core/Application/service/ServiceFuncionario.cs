@@ -9,7 +9,7 @@ namespace Api.Core.Application.service
 
        Task<bool> UpdateFuncionarioService(FuncionarioDto campos, int id);
        Task<bool> DeleteFuncionarioService(int id); 
-       Task<ListaFuncionario> GetAll();
+       Task<ListaFuncionario> GetAll(int limit, int page);
        Task<FuncionarioDto> GetByIdService(int id);
        Task<FuncionarioLoginDto> Admin(string cpf);
    }
@@ -18,15 +18,16 @@ namespace Api.Core.Application.service
     /// </summary>
     public class  ServiceFuncionario(IRepositoryFuncionario repo):IServiceFuncionario
     {
-       
         /// <summary>
         /// Retorna todos os funcionários cadastrados.
         /// </summary>
+        /// <param name="limit"></param>
+        /// <param name="page"></param>
         /// <returns>ListaFuncionario com todos os registros.</returns>
-        public async Task<ListaFuncionario> GetAll()
+        public async Task<ListaFuncionario> GetAll(int limit, int page)
        {
            ListaFuncionario lista=new();
-           lista =await repo.GetFuncionario();
+           lista =await repo.GetFuncionario(limit,page);
            if (lista.Funcionarios.Count==0)
            {
                throw new ReturnDataIsEmpty();

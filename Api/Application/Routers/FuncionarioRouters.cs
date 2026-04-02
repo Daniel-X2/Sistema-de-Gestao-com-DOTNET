@@ -21,9 +21,6 @@ public class FuncionarioRouters
             {
                 
                 var n1 = await service.Admin(body.cpf);
-               
-                
-                
                 if (Crypto.VerificarHash(body.Senha,n1.SenhaHash))
                 {
                    return Results.Ok(token.Generate(new Users(body.cpf, body.Senha, new[] { "Admin" }), n1.isadmin));
@@ -32,10 +29,10 @@ public class FuncionarioRouters
                 return  Results.Ok(token.Generate(new Users(body.cpf,body.Senha,new []{"User"}),n1.isadmin));
             
             });
-            app.MapGet("/funcionario/get",async Task<IResult> (IServiceFuncionario service) =>
+            app.MapGet("/funcionario/get",async Task<IResult> (IServiceFuncionario service,int page=1,int limit=100) =>
             {
               
-                var funcionario= await service.GetAll();
+                var funcionario= await service.GetAll(limit, page);
                 return Results.Ok(funcionario) ;
                 
             }).WithTags("Funcionario").WithSummary("Lista os funcionarios").WithDescription("Retorna uma lista de todos os funcionários cadastrados, incluindo seus IDs para operações futuras.").RequireAuthorization("Admin");

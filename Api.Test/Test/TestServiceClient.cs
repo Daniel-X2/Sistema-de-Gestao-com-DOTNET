@@ -34,18 +34,18 @@ public class TestServiceClient
     public async Task TestGetClientInvalido()
     {
         var campos = new ListaClient();
-        moq.Setup(repo => repo.GetAllClient()).ReturnsAsync(campos);
+        moq.Setup(repo => repo.GetAllClient(1, 10)).ReturnsAsync(campos);
         var n1 = new ServiceClient(moq.Object);
-        await Assert.ThrowsAsync<ReturnDataIsEmpty>(async () => await n1.GetAllService());
+        await Assert.ThrowsAsync<ReturnDataIsEmpty>(async () => await n1.GetAllService(1, 10));
     }
     [Fact]
     public async Task TestGetClientvalido()
     {
         var campos = new ListaClient();
         campos.Clients.Add(ReturnDados.ReturnCLient());
-        moq.Setup(repo => repo.GetAllClient()).ReturnsAsync(campos);
+        moq.Setup(repo => repo.GetAllClient(1, 10)).ReturnsAsync(campos);
         var n1 = new ServiceClient(moq.Object);
-        await n1.GetAllService();
+        await n1.GetAllService(1, 10);
         
     }
     [Fact]

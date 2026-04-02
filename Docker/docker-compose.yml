@@ -1,7 +1,7 @@
 services: 
     api: 
       build:
-        context: .
+        context: ..
         dockerfile: Dockerfile
       image: danizura/api-gestao-assincrona-api-s:1.0
       container_name: api

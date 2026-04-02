@@ -11,7 +11,7 @@ public interface  IRepositoryClient
     // Os métodos são definidos como internal para restringir o acesso
     // direto ao repositório fora deste assembly.
     // A implementação usa public apenas para cumprir o contrato da interface.    
-   internal Task<ListaClient>  GetAllClient();
+   internal Task<ListaClient> GetAllClient(int page, int limit);
    internal Task<ClientDto> GetById(int id);
    internal Task<int> AddClient(ClientDto campos);
    internal Task<bool> ExistsAccount(int conta);
@@ -26,20 +26,23 @@ public interface  IRepositoryClient
 /// </summary>
 internal class RepositoryClient(IConnect host):IRepositoryClient
 {
-    
     /// <summary>
     /// Consulta todos os clientes na tabela 'cliente'.
     /// </summary>
+    /// <param name="page"></param>
+    /// <param name="limit"></param>
     /// <returns>Lista de clientes (ListaClient).</returns>
-    public async Task<ListaClient>  GetAllClient()
+    public async Task<ListaClient>  GetAllClient(int page,int limit)
     {
 
-        await using NpgsqlConnection connect=host.Connect(); 
-        
+        await using NpgsqlConnection connect=host.Connect();
+        var offset = (page - 1) * limit;
         await connect.OpenAsync();
 
-        await using var cmd = new NpgsqlCommand("SELECT * FROM cliente ", connect);
-
+        await using var cmd = new NpgsqlCommand("SELECT * FROM cliente LIMIT @limit OFFSET @offset", connect);
+        cmd.Parameters.AddWithValue("limit", limit);
+        cmd.Parameters.AddWithValue("offset", offset);
+        
         ListaClient lista=new();
         
         await using var reader = await cmd.ExecuteReaderAsync();

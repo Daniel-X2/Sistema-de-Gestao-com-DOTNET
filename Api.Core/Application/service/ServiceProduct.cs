@@ -6,10 +6,10 @@ namespace Api.Core.Application.service
 {
     public interface IServiceProduct
 {
-    Task<ListaProduct> GetAllProduct();
+    Task<ListaProduct> GetAllProduct(int limit, int page);
    Task<bool> AddProduct(ProdutoDto campos);
    Task<bool> DeleteProduct(int id);
-   Task<ListaProduct>  GetEstoque();
+   Task<ListaProduct> GetEstoque(int limit, int page);
    Task<List<decimal>> GetValorBruto();
    Task<ProdutoDto> GetProdutId(int id);
    Task<bool> UpdateProduct(ProdutoDto campos, int id);
@@ -22,11 +22,13 @@ class ServiceProduct(IRepositoryProduct repo):IServiceProduct
     /// <summary>
     /// Lista todos os produtos com informações completas.
     /// </summary>
+    /// <param name="limit"></param>
+    /// <param name="page"></param>
     /// <returns>Objeto ListaProduct.</returns>
-    public async Task<ListaProduct> GetAllProduct()
+    public async Task<ListaProduct> GetAllProduct(int limit, int page)
     {
        
-       ListaProduct  lista =await repo.GetAllProduct();
+       ListaProduct  lista =await repo.GetAllProduct(limit, page);
        if(lista.Product.Count>=1)
        {
                return lista;
@@ -95,10 +97,12 @@ class ServiceProduct(IRepositoryProduct repo):IServiceProduct
     /// <summary>
     /// Obtém uma lista simplificada do estoque (nome e quantidade).
     /// </summary>
+    /// <param name="limit"></param>
+    /// <param name="page"></param>
     /// <returns>Objeto ListaProduct com dados de estoque.</returns>
-    public async Task<ListaProduct> GetEstoque()
+    public async Task<ListaProduct> GetEstoque(int limit, int page)
     {
-        ListaProduct lista =await repo.GetEstoque();
+        ListaProduct lista =await repo.GetEstoque(limit, page);
         if (lista.Product.Count <= 0)
         {
             throw new ReturnDataIsEmpty();

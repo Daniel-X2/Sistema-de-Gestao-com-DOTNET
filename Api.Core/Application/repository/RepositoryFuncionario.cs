@@ -13,7 +13,7 @@ public interface IRepositoryFuncionario
     // direto ao repositório fora deste assembly.
     // A implementação usa public apenas para cumprir o contrato da interface.
    internal Task<bool> ExistsCpf(string cpf);
-   internal Task<ListaFuncionario> GetFuncionario();
+   internal Task<ListaFuncionario> GetFuncionario(int limit, int page);
    internal Task<int> AddFuncionario(FuncionarioDto campos);//
    internal Task<int> UpdateFuncionario(FuncionarioDto campos,int id);
    internal Task<int> DeleteFuncionario(int id);
@@ -65,19 +65,22 @@ internal class RepositoryFuncionario(IConnect host):IRepositoryFuncionario
         bool resultado=(bool) await cmd.ExecuteScalarAsync();
         return resultado;
     }
+
     /// <summary>
     /// Lista todos os funcionários cadastrados.
     /// </summary>
     /// <returns>ListaFuncionario com todos os registros.</returns>
-    public async Task<ListaFuncionario> GetFuncionario()
+    public async Task<ListaFuncionario> GetFuncionario(int limit, int page)
     {
         
+        var offset = (page - 1) * limit;
         await using NpgsqlConnection connect=host.Connect();
         
         await connect.OpenAsync();
         
-        await using var cmd = new NpgsqlCommand("SELECT * FROM funcionario", connect);
-       
+        await using var cmd = new NpgsqlCommand("SELECT * FROM funcionario LIMIT @limit OFFSET @offset", connect);
+        cmd.Parameters.AddWithValue("limit", limit);
+        cmd.Parameters.AddWithValue("offset", offset);
         ListaFuncionario lista=new();
 
         await using var reader = await cmd.ExecuteReaderAsync();

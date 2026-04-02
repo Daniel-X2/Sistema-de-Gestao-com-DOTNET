@@ -14,18 +14,18 @@ public class TestServiceFuncionario
     public async Task TestGetFuncionarioInvalido()
     {
         var campos = new ListaFuncionario();
-        moq.Setup(repo => repo.GetFuncionario()).ReturnsAsync(campos);
+        moq.Setup(repo => repo.GetFuncionario(TODO, TODO)).ReturnsAsync(campos);
         var n1 = new ServiceFuncionario(moq.Object);
-        await Assert.ThrowsAsync<ReturnDataIsEmpty>(async () => await n1.GetAll());
+        await Assert.ThrowsAsync<ReturnDataIsEmpty>(async () => await n1.GetAll(TODO, TODO));
     }
     [Fact]
     public async Task TestGetClientvalido()
     {
         var campos = new ListaFuncionario();
         campos.Funcionarios.Add(ReturnDados.ReturnFuncionario());
-        moq.Setup(repo => repo.GetFuncionario()).ReturnsAsync(campos);
+        moq.Setup(repo => repo.GetFuncionario(TODO, TODO)).ReturnsAsync(campos);
         var n1 = new ServiceFuncionario(moq.Object);
-        await n1.GetAll();
+        await n1.GetAll(TODO, TODO);
         
     }
     [Fact]

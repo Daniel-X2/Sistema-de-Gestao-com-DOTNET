@@ -7,7 +7,7 @@ namespace Api.Core.Application.service
 {
     public interface IServiceClient
     {
-        Task<ListaClient> GetAllService();
+        Task<ListaClient> GetAllService(int page,int limit);
 
         Task<StringBuilder> UpdateService(int id, ClientDto campos);
         Task<bool> AddService(ClientDto campos);
@@ -38,11 +38,11 @@ namespace Api.Core.Application.service
     /// Obtém uma lista contendo todos os clientes cadastrados.
     /// </summary>
     /// <returns>Objeto ListaClient com a lista de clientes.</returns>
-    public async Task<ListaClient> GetAllService()//
+    public async Task<ListaClient> GetAllService(int page,int limit)//
     {
     
         
-        ListaClient valores= await repo.GetAllClient();
+        ListaClient valores= await repo.GetAllClient(page, limit);
        
         if(valores.Clients.Count>=1)
         {
