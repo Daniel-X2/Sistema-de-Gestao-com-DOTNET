@@ -1,5 +1,5 @@
 # Sistema de Gestão com .NET
-
+![CI](https://github.com/Daniel-X2/Sistema-de-Gestao-com-DOTNET/actions/workflows/desenvolvimento.yaml/badge.svg)
 API REST assíncrona desenvolvida em ASP.NET Core para gestão de clientes, funcionários e produtos, utilizando PostgreSQL como banco de dados. O projeto segue uma arquitetura modular com separação de responsabilidades entre as camadas de roteamento, serviços e repositórios.
 
 API disponível em produção:
