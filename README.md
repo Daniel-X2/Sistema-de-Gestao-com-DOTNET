@@ -7,7 +7,11 @@ API disponível em produção:
 https://api-gestao-assincrona.up.railway.app/
 
 A documentação interativa (Swagger) está acessível na raiz da URL. Use o login padrão para gerar o token e testar os endpoints diretamente.
+## 🎥 Demonstração
 
+Vídeo mostrando autenticação JWT e uso de endpoints protegidos:
+
+https://youtu.be/g3xyDaQyCmI
 ## Tecnologias
 
 - **Plataforma**: .NET / ASP.NET Core (Minimal APIs)
