@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "lFVGcPMjAGI=",
+  "dgSpecHash": "5LfugtGhCEg=",
   "success": true,
-  "projectFilePath": "/home/daniel/Desktop/API-Gestao-Assincrona-sem-docker/Api/Api.csproj",
+  "projectFilePath": "/home/daniel/Área de trabalho/API-Gestao-Assincrona-sem-docker/Api/Api.csproj",
   "expectedPackageFiles": [
     "/home/daniel/.nuget/packages/bcrypt.net-next/4.1.0/bcrypt.net-next.4.1.0.nupkg.sha512",
     "/home/daniel/.nuget/packages/bogus/35.6.5/bogus.35.6.5.nupkg.sha512",
@@ -46,9 +46,9 @@
       "code": "NU1510",
       "level": "Warning",
       "message": "PackageReference Microsoft.AspNetCore.Authentication will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
-      "projectPath": "/home/daniel/Desktop/API-Gestao-Assincrona-sem-docker/Api/Api.csproj",
+      "projectPath": "/home/daniel/Área de trabalho/API-Gestao-Assincrona-sem-docker/Api/Api.csproj",
       "warningLevel": 1,
-      "filePath": "/home/daniel/Desktop/API-Gestao-Assincrona-sem-docker/Api/Api.csproj",
+      "filePath": "/home/daniel/Área de trabalho/API-Gestao-Assincrona-sem-docker/Api/Api.csproj",
       "libraryId": "Microsoft.AspNetCore.Authentication",
       "targetGraphs": [
         "net10.0"

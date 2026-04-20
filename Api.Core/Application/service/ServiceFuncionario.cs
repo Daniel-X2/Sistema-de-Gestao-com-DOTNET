@@ -12,6 +12,7 @@ namespace Api.Core.Application.service
        Task<ListaFuncionario> GetAll(int limit, int page);
        Task<FuncionarioDto> GetByIdService(int id);
        Task<FuncionarioLoginDto> Admin(string cpf);
+       Task<long> QuantidadeFuncionario();
    }
     /// <summary>
     /// Gerencia a lógica de negócio referente aos funcionários (autenticação e CRUD).
@@ -43,9 +44,8 @@ namespace Api.Core.Application.service
         /// <returns>Dados para login (hash da senha e status de admin).</returns>
         public async Task<FuncionarioLoginDto> Admin(string cpf)
         {
-            
-            FuncionarioLoginDto funcionario=await  repo.GetAdmin(cpf);
-            
+            Validation valid = new Validation();
+            FuncionarioLoginDto funcionario=await  repo.GetAdmin(valid.IsValidDigit(cpf));
             if (funcionario==null)
             {
                 throw new InvalidCpfException(cpf);
@@ -72,7 +72,7 @@ namespace Api.Core.Application.service
            {
                throw new InvalidCpfException(campos.Cpf);
            }
-
+            
            int resultado = await repo.AddFuncionario(campos);
            if(resultado>=1)
            {
@@ -168,6 +168,10 @@ namespace Api.Core.Application.service
             
         }
         
+        public async Task<long> QuantidadeFuncionario()
+        {
+            return await repo.QuantidadeFuncionario();
+        }
     }
 }
 

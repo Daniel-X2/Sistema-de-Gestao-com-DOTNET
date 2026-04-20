@@ -13,6 +13,7 @@ namespace Api.Core.Application.service
    Task<List<decimal>> GetValorBruto();
    Task<ProdutoDto> GetProdutId(int id);
    Task<bool> UpdateProduct(ProdutoDto campos, int id);
+   Task<long> QuantidadeProduct();
 }
 /// <summary>
 /// Lógica de negócio para a gestão de produtos e estoque.
@@ -189,6 +190,11 @@ class ServiceProduct(IRepositoryProduct repo):IServiceProduct
            return true;
        }
        throw new ErroUpdateToDatabaseException();
+    }
+
+    public async Task<long> QuantidadeProduct()
+    {
+        return await repo.QuantidadeProduct();
     }
 }
 }

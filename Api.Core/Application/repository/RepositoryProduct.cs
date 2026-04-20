@@ -19,6 +19,7 @@ namespace Api.Core.Application.repository
     internal Task<ProdutoDto> GetProductById(int id);
     internal Task<bool> IsExistLote(int lote);
     internal Task<bool> IsExistCode(int codigo);
+    internal Task<long> QuantidadeProduct();
     }
 /// <summary>
 /// Repositório para manipulação de produtos e estoque no banco de dados.
@@ -43,6 +44,7 @@ class RepositoryProduct(IConnect host):IRepositoryProduct
         if (!await reader.ReadAsync()) { return null;}
 
         ProdutoDto campos=new();
+        campos.Id=(int)reader["id"];
         campos.Nome=(string)reader["nome"];
         campos.Codigo=(int)reader["codigo"];
         campos.Lote=(int)reader["lote"];
@@ -106,6 +108,7 @@ class RepositoryProduct(IConnect host):IRepositoryProduct
         while (await read.ReadAsync())
         {
             ProdutoDto campos=new();
+            campos.Id=(int)read["id"];
             campos.Nome=(string)read["nome"];
             campos.Codigo=(int)read["codigo"];
             campos.Quantidade=(int)read["quantidade"];
@@ -226,5 +229,13 @@ class RepositoryProduct(IConnect host):IRepositoryProduct
 
     
     
+    public async Task<long> QuantidadeProduct()
+    {
+        await using NpgsqlConnection connect = host.Connect();
+        await connect.OpenAsync();
+        await using var cmd = new NpgsqlCommand("SELECT COUNT(*) FROM produto", connect);
+        var result = (long)await cmd.ExecuteScalarAsync();
+        return result;
+    }
 }
 }

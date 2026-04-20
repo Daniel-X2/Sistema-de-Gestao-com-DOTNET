@@ -19,6 +19,7 @@ public interface IRepositoryFuncionario
    internal Task<int> DeleteFuncionario(int id);
    internal Task<FuncionarioLoginDto> GetAdmin(string cpf);
    internal Task<FuncionarioDto> GetById(int id);
+   internal Task<long> QuantidadeFuncionario();
     }
 /// <summary>
 /// Repositório para gestão de funcionários no banco de dados.
@@ -93,8 +94,9 @@ internal class RepositoryFuncionario(IConnect host):IRepositoryFuncionario
             campos.Isadmin=(bool)reader["isadmin"];
             campos.QuantidadeAtestado=(int)reader["quantidade_atestado"];
             campos.Nascimento=(int)reader["nascimento"];
-            campos.Data = (string)reader["data"];
-            campos.Empresa = (string)reader["empresa"];
+            campos.Data=(int)reader["data"];
+            
+            
             lista.Funcionarios.Add(campos);
         }
          
@@ -113,7 +115,7 @@ internal class RepositoryFuncionario(IConnect host):IRepositoryFuncionario
         
         await connect.OpenAsync();
 
-        await using (var cmd = new NpgsqlCommand("INSERT INTO funcionario (nome ,cpf, isadmin,quantidade_atestado,nascimento,senha_hash, data, empresa) VALUES (@nome ,@cpf, @isadmin,@quantidade_atestado,@nascimento,@senha_hash, @data, @empresa)", connect))
+        await using (var cmd = new NpgsqlCommand("INSERT INTO funcionario (nome ,cpf, isadmin,quantidade_atestado,nascimento,senha_hash,data) VALUES (@nome ,@cpf, @isadmin,@quantidade_atestado,@nascimento,@senha_hash,@data)", connect))
         {
             cmd.Parameters.AddWithValue("nome", campos.Nome);
             cmd.Parameters.AddWithValue("cpf", campos.Cpf);
@@ -122,7 +124,6 @@ internal class RepositoryFuncionario(IConnect host):IRepositoryFuncionario
             cmd.Parameters.AddWithValue("nascimento",campos.Nascimento);
             cmd.Parameters.AddWithValue("senha_hash", campos.Senha);
             cmd.Parameters.AddWithValue("data", campos.Data);
-            cmd.Parameters.AddWithValue("empresa", campos.Empresa);
             resultado=await cmd.ExecuteNonQueryAsync();
         }
         
@@ -142,7 +143,7 @@ internal class RepositoryFuncionario(IConnect host):IRepositoryFuncionario
 
         await connect.OpenAsync();
         int resultado;
-      await  using (var cmd=new NpgsqlCommand("UPDATE  funcionario set nome =@nome,cpf=@cpf,isadmin=@isadmin,quantidade_atestado=@quantidade_atestado,nascimento=@nascimento, data=@data, empresa=@empresa WHERE id=@id", connect))
+      await  using (var cmd=new NpgsqlCommand("UPDATE funcionario set nome =@nome,cpf=@cpf,isadmin=@isadmin,quantidade_atestado=@quantidade_atestado,nascimento=@nascimento,data=@data WHERE id=@id", connect))
         {
             cmd.Parameters.AddWithValue("nome", campos.Nome);
             cmd.Parameters.AddWithValue("cpf", campos.Cpf);
@@ -150,7 +151,8 @@ internal class RepositoryFuncionario(IConnect host):IRepositoryFuncionario
             cmd.Parameters.AddWithValue("quantidade_atestado", campos.QuantidadeAtestado);
             cmd.Parameters.AddWithValue("nascimento",campos.Nascimento);
             cmd.Parameters.AddWithValue("data", campos.Data);
-            cmd.Parameters.AddWithValue("empresa", campos.Empresa);
+            
+            
             cmd.Parameters.AddWithValue("id", id);
             resultado=await cmd.ExecuteNonQueryAsync();
         }
@@ -204,8 +206,9 @@ internal class RepositoryFuncionario(IConnect host):IRepositoryFuncionario
         campos.Isadmin=(bool)reader["Isadmin"];
         campos.Nascimento=(int)reader["nascimento"];
         campos.QuantidadeAtestado = (int)reader["quantidade_atestado"];
-        campos.Data = (string)reader["data"];
-        campos.Empresa = (string)reader["empresa"];
+        campos.Data = (int)reader["data"];
+      
+        
            
         
          
@@ -213,5 +216,13 @@ internal class RepositoryFuncionario(IConnect host):IRepositoryFuncionario
     }
 
 
+    public async Task<long> QuantidadeFuncionario()
+    {
+        await using NpgsqlConnection connect = host.Connect();
+        await connect.OpenAsync();
+        await using var cmd = new NpgsqlCommand("SELECT COUNT(*) FROM funcionario", connect);
+        var result = (long)await cmd.ExecuteScalarAsync();
+        return result;
+    }
 }
 }

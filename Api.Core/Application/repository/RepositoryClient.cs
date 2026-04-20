@@ -19,7 +19,7 @@ public interface  IRepositoryClient
    internal Task<int> UpdateClient(ClientDto campos, int id);
    internal Task<int> DeleteClient(int id);
    internal Task<int> GetIdByCpf(string cpf);
-
+   internal Task<long> QuantidadeClient();
 }
 /// <summary>
 /// Repositório para manipulação de dados da tabela 'cliente' no PostgreSQL.
@@ -55,7 +55,7 @@ internal class RepositoryClient(IConnect host):IRepositoryClient
             campos.Cpf=(string)reader["cpf"];
             campos.Conta=(int)reader["conta"];
             campos.Isvip=(bool)reader["isvip"];
-            campos.Data = (int)reader["data"];
+            campos.Data=(int)reader["data"];
             campos.Empresa=(string)reader["empresa"];
             lista.Clients.Add(campos);
         }
@@ -85,7 +85,7 @@ internal class RepositoryClient(IConnect host):IRepositoryClient
         campos.Cpf=(string)reader["cpf"];
         campos.Conta=(int)reader["conta"];
         campos.Isvip=(bool)reader["isvip"];
-        campos.Data = (int)reader["data"];
+        campos.Data=(int)reader["data"];
         campos.Empresa=(string)reader["empresa"];
         
          
@@ -147,6 +147,18 @@ internal class RepositoryClient(IConnect host):IRepositoryClient
         cmd.Parameters.AddWithValue("cpf",cpf);
         bool resultado=(bool) await cmd.ExecuteScalarAsync();
         return resultado;
+    }
+
+    public async Task<Int64> QuantidadeClient()
+    {
+        await using NpgsqlConnection connect=host.Connect(); 
+        
+        await connect.OpenAsync();
+
+        await using var cmd = new NpgsqlCommand("SELECT COUNT(*) FROM cliente", connect);
+        var result =(Int64)  await cmd.ExecuteScalarAsync();
+        
+        return result;
     }
     /// <summary>
     /// Atualiza os dados de um cliente pelo ID.

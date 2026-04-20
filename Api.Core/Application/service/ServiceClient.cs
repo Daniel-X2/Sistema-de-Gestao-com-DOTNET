@@ -12,6 +12,7 @@ namespace Api.Core.Application.service
         Task<StringBuilder> UpdateService(int id, ClientDto campos);
         Task<bool> AddService(ClientDto campos);
         Task<bool> DeleteService(int id);
+        Task<long> QuantidadeClient();
     }
     /// <summary>
     /// Implementação da lógica de negócio para gestão de clientes.
@@ -50,6 +51,19 @@ namespace Api.Core.Application.service
         }
 
         throw new ReturnDataIsEmpty();
+
+    }
+    public async Task<long> QuantidadeClient()//
+    {
+    
+        
+        var valores= await repo.QuantidadeClient();
+       
+        
+        return valores;
+        
+
+       
 
     }
     /// <summary>

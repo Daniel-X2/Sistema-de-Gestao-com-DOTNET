@@ -25,7 +25,13 @@ public class  ClientRouter
             
             return Results.Ok(lista) ;
         }).WithTags("Client").WithSummary("Listar todos os clientes").WithDescription("Retorna uma lista contendo todos os clientes cadastrados no sistema.").RequireAuthorization();
-
+        app.MapGet("/client/quantidade", async Task<IResult> (IServiceClient service) =>
+        {
+           
+            var lista=  await service.QuantidadeClient();
+            
+            return Results.Ok(lista) ;
+        }).WithTags("Client").WithSummary("Listar todos os clientes").WithDescription("Retorna uma lista contendo todos os clientes cadastrados no sistema.").RequireAuthorization();
         app.MapDelete("/client/delete/{id}", async  Task<IResult> (int id,IServiceClient service) =>
         {
           bool resultado= await service.DeleteService(id);

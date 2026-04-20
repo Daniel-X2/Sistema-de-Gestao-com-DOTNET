@@ -18,5 +18,7 @@ public class AddScope
         
         builder.Services.AddScoped<IServiceProduct, ServiceProduct>();
         builder.Services.AddScoped<IRepositoryProduct, RepositoryProduct>();
+
+        builder.Services.AddScoped<IDashboardService, DashboardService>();
     }
 }

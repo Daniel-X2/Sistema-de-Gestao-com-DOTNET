@@ -1,7 +1,6 @@
 using Api.Core.Application.service;
 using auth.Models;
 using Dto;
-
 using auth.Services;
 namespace Api.Routers;
 
@@ -21,6 +20,7 @@ public class FuncionarioRouters
             {
                 
                 var n1 = await service.Admin(body.cpf);
+                
                 if (Crypto.VerificarHash(body.Senha,n1.SenhaHash))
                 {
                    return Results.Ok(token.Generate(new Users(body.cpf, body.Senha, new[] { "Admin" }), n1.isadmin));
@@ -56,16 +56,18 @@ public class FuncionarioRouters
             }).WithTags("Funcionario").WithSummary("Excluir funcionario por ID").WithDescription("Remove o registro de um funcionário do sistema utilizando seu ID. Retorna OK se removido com sucesso.").RequireAuthorization();
 
             app.MapPost("/funcionario/add/",async Task<IResult> (FuncionarioDto campos, IServiceFuncionario service) =>
-                    {
+            {
+                    campos.Senha = Crypto.RetornHash(campos.Senha);
+                
                      bool resultado=  await service.AddService(campos);
                      if (resultado)
                      {
                        return  Results.Ok("adicionado com sucesso");
                      }
-
+                    
                      return Results.BadRequest("erro ao adicionar");
                      
-                    }).WithTags("Funcionario").WithSummary("Adiciona funcionario").WithDescription("Cadastra um novo funcionário no sistema com os dados fornecidos. Retorna sucesso ou erro no processamento.").RequireAuthorization();
+            }).WithTags("Funcionario").WithSummary("Adiciona funcionario").WithDescription("Cadastra um novo funcionário no sistema com os dados fornecidos. Retorna sucesso ou erro no processamento.").RequireAuthorization();
 
             app.MapPut("funcionario/update/{id}/", async Task<IResult> (int id,FuncionarioDto campos, IServiceFuncionario service) =>
             {

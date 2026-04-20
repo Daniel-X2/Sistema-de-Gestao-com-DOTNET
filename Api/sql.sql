@@ -22,8 +22,7 @@ CREATE TABLE  funcionario(
     senha_hash text,
 	quantidade_atestado int,
 	nascimento int,
-	data text,
-	
+	data int
 );
 CREATE TABLE produto(
 	id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

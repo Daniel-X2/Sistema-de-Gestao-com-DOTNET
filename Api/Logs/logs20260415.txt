@@ -1,0 +1,48 @@
+2026-04-15 13:09:33.841 -03:00 [INF] User profile is available. Using '/home/daniel/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-04-15 13:09:33.927 -03:00 [INF] Creating key {fab6096c-15c5-4239-8592-f253ae0d8f12} with creation date 2026-04-15 16:09:33Z, activation date 2026-04-15 16:09:33Z, and expiration date 2026-07-14 16:09:33Z.
+2026-04-15 13:09:33.941 -03:00 [WRN] No XML encryptor configured. Key {fab6096c-15c5-4239-8592-f253ae0d8f12} may be persisted to storage in unencrypted form.
+2026-04-15 13:09:33.947 -03:00 [INF] Writing data to file '/home/daniel/.aspnet/DataProtection-Keys/key-fab6096c-15c5-4239-8592-f253ae0d8f12.xml'.
+2026-04-15 13:09:34.154 -03:00 [INF] Now listening on: http://0.0.0.0:5153
+2026-04-15 13:09:34.156 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-15 13:09:34.156 -03:00 [INF] Hosting environment: Development
+2026-04-15 13:09:34.156 -03:00 [INF] Content root path: /home/daniel/Área de trabalho/API-Gestao-Assincrona-sem-docker/Api
+2026-04-15 13:10:10.043 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5153/index.html - null null
+2026-04-15 13:10:10.209 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5153/index.html - 200 null text/html;charset=utf-8 167.4028ms
+2026-04-15 13:10:10.274 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5153/index.js - null null
+2026-04-15 13:10:10.280 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5153/index.js - 200 null application/javascript;charset=utf-8 6.9883ms
+2026-04-15 13:10:10.512 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5153/swagger/v1/swagger.json - null null
+2026-04-15 13:10:10.528 -03:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-04-15 13:10:10.686 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5153/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 173.7782ms
+2026-04-15 13:11:54.876 -03:00 [INF] Request starting HTTP/1.1 POST http://localhost:5153/login - application/json 44
+2026-04-15 13:11:54.957 -03:00 [INF] Executing endpoint 'HTTP: POST /login/'
+2026-04-15 13:11:55.396 -03:00 [INF] Setting HTTP status code 200.
+2026-04-15 13:11:55.397 -03:00 [INF] Writing value of type 'String' as Json.
+2026-04-15 13:11:55.400 -03:00 [INF] Executed endpoint 'HTTP: POST /login/'
+2026-04-15 13:11:55.403 -03:00 [INF] HTTP POST /login responded 200 in 446.5972 ms
+2026-04-15 13:11:55.406 -03:00 [INF] Request finished HTTP/1.1 POST http://localhost:5153/login - 200 null application/json; charset=utf-8 529.8747ms
+2026-04-15 13:13:00.845 -03:00 [INF] Request starting HTTP/1.1 POST http://localhost:5153/login - application/json 44
+2026-04-15 13:13:00.887 -03:00 [INF] Executing endpoint 'HTTP: POST /login/'
+2026-04-15 13:13:00.898 -03:00 [INF] Setting HTTP status code 200.
+2026-04-15 13:13:00.898 -03:00 [INF] Writing value of type 'String' as Json.
+2026-04-15 13:13:00.899 -03:00 [INF] Executed endpoint 'HTTP: POST /login/'
+2026-04-15 13:13:00.899 -03:00 [INF] HTTP POST /login responded 200 in 11.7869 ms
+2026-04-15 13:13:00.899 -03:00 [INF] Request finished HTTP/1.1 POST http://localhost:5153/login - 200 null application/json; charset=utf-8 54.2486ms
+2026-04-15 13:13:25.071 -03:00 [INF] User profile is available. Using '/home/daniel/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-04-15 13:13:25.511 -03:00 [INF] Now listening on: http://0.0.0.0:5153
+2026-04-15 13:13:25.513 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-15 13:13:25.514 -03:00 [INF] Hosting environment: Development
+2026-04-15 13:13:25.514 -03:00 [INF] Content root path: /home/daniel/Área de trabalho/API-Gestao-Assincrona-sem-docker/Api
+2026-04-15 13:17:16.854 -03:00 [INF] Request starting HTTP/1.1 POST http://localhost:5153/login - application/json 44
+2026-04-15 13:17:17.093 -03:00 [INF] Executing endpoint 'HTTP: POST /login/'
+2026-04-15 13:18:11.110 -03:00 [INF] Setting HTTP status code 200.
+2026-04-15 13:18:11.112 -03:00 [INF] Writing value of type 'String' as Json.
+2026-04-15 13:18:11.125 -03:00 [INF] Executed endpoint 'HTTP: POST /login/'
+2026-04-15 13:18:11.133 -03:00 [INF] HTTP POST /login responded 200 in 54036.1432 ms
+2026-04-15 13:18:11.141 -03:00 [INF] Request finished HTTP/1.1 POST http://localhost:5153/login - 200 null application/json; charset=utf-8 54289.5101ms
+2026-04-15 13:18:20.455 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5153/funcionario/get?page=1&limit=100 - null null
+2026-04-15 13:18:20.471 -03:00 [INF] Executing endpoint 'HTTP: GET /funcionario/get'
+2026-04-15 13:18:20.495 -03:00 [INF] Setting HTTP status code 200.
+2026-04-15 13:18:20.504 -03:00 [INF] Writing value of type 'ListaFuncionario' as Json.
+2026-04-15 13:18:20.509 -03:00 [INF] Executed endpoint 'HTTP: GET /funcionario/get'
+2026-04-15 13:18:20.509 -03:00 [INF] HTTP GET /funcionario/get responded 200 in 37.7181 ms
+2026-04-15 13:18:20.509 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5153/funcionario/get?page=1&limit=100 - 200 null application/json; charset=utf-8 55.25ms

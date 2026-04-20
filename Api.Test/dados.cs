@@ -45,8 +45,8 @@ public class ReturnDados
         funcionario.Isadmin = n1.Random.Bool();
         funcionario.QuantidadeAtestado = n1.Random.Int(min: 0, max: 50);
         funcionario.Nascimento = n1.Person.DateOfBirth.Year;
-        funcionario.Empresa = n1.Company.CompanyName();
-        funcionario.Data = n1.Date.Past().ToString("yyyy-MM-dd");
+       
+        
        
         return funcionario;
     }
