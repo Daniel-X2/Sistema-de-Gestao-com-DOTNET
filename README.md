@@ -3,9 +3,6 @@
 
 API REST assíncrona desenvolvida em ASP.NET Core para gestão de clientes, funcionários e produtos, utilizando PostgreSQL como banco de dados. O projeto segue uma arquitetura modular com separação de responsabilidades entre as camadas de roteamento, serviços e repositórios.
 
-API disponível em produção:
-https://api-gestao-assincrona.up.railway.app/
-
 A documentação interativa (Swagger) está acessível na raiz da URL. Use o login padrão para gerar o token e testar os endpoints diretamente.
 ## 🎥 Demonstração
 
