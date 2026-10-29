@@ -1,4 +1,6 @@
 
+using Npgsql;
+
 public class ExceptionHandlingMiddleware
 {
     private  RequestDelegate _next;
@@ -95,11 +97,18 @@ public class ExceptionHandlingMiddleware
             await context.Response.WriteAsJsonAsync(new { erro = "A senha inserida esta errada" });
             _logger.LogError($"Senha Invalida: {ex.Message}");
         }
+        catch (NpgsqlException ex )
+        {
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsJsonAsync(new { erro = "aconteceu um Erro com o Banco de dados", details = ex.Message });
+            _logger.LogError($"Erro no Banco: {ex.Message}");
+        }
         catch (Exception ex)
         {
-         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-    await context.Response.WriteAsJsonAsync(new { erro = "erro inesperado" });
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsJsonAsync(new { erro = "erro inesperado" });
             _logger.LogError($"Erro inesperado: {ex.Message}");
         }
+
     }
 }

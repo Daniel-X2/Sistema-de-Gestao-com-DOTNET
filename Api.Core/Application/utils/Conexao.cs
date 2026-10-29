@@ -11,11 +11,6 @@ internal interface IConnect
     internal NpgsqlConnection Connect();
 }
 
-
-     
-     
-  
-
    class  ConnectHost:IConnect
   {
       
@@ -26,7 +21,6 @@ internal interface IConnect
           {
               throw new InvalidConnection();
           }
-
           return connectionString;
       }
        

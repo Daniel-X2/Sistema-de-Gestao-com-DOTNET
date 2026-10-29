@@ -69,3 +69,7 @@ public class InvalidLoteException : Exception
 {
     public InvalidLoteException(int lote) : base($"o lote {lote} ja existe ou e um numero negativo"){}
 }
+public class ErroToCreateDataBase: Exception
+{
+    public ErroToCreateDataBase(){}
+}

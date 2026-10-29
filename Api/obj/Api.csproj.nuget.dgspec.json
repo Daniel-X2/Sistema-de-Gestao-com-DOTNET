@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/daniel/Área de trabalho/API-Gestao-Assincrona-sem-docker/Api/Api.csproj": {}
+    "/home/daniel/Projetos/Sistema-de-Gestao-com-DOTNET/Api/Api.csproj": {}
   },
   "projects": {
-    "/home/daniel/Área de trabalho/API-Gestao-Assincrona-sem-docker/Api.Core/Api.Core.csproj": {
+    "/home/daniel/Projetos/Sistema-de-Gestao-com-DOTNET/Api.Core/Api.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/daniel/Área de trabalho/API-Gestao-Assincrona-sem-docker/Api.Core/Api.Core.csproj",
+        "projectUniqueName": "/home/daniel/Projetos/Sistema-de-Gestao-com-DOTNET/Api.Core/Api.Core.csproj",
         "projectName": "Api.Core",
-        "projectPath": "/home/daniel/Área de trabalho/API-Gestao-Assincrona-sem-docker/Api.Core/Api.Core.csproj",
+        "projectPath": "/home/daniel/Projetos/Sistema-de-Gestao-com-DOTNET/Api.Core/Api.Core.csproj",
         "packagesPath": "/home/daniel/.nuget/packages/",
-        "outputPath": "/home/daniel/Área de trabalho/API-Gestao-Assincrona-sem-docker/Api.Core/obj/",
+        "outputPath": "/home/daniel/Projetos/Sistema-de-Gestao-com-DOTNET/Api.Core/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/daniel/.nuget/NuGet/NuGet.Config"
@@ -20,11 +20,11 @@
           "net10.0"
         ],
         "sources": {
-          "/usr/lib/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net10.0": {
+            "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {}
           }
@@ -39,10 +39,11 @@
           "auditLevel": "low",
           "auditMode": "all"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "10.0.400"
       },
       "frameworks": {
         "net10.0": {
+          "framework": "net10.0",
           "targetAlias": "net10.0",
           "dependencies": {
             "BCrypt.Net-Next": {
@@ -77,7 +78,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/10.0.106/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.403/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
@@ -495,14 +496,14 @@
         }
       }
     },
-    "/home/daniel/Área de trabalho/API-Gestao-Assincrona-sem-docker/Api/Api.csproj": {
+    "/home/daniel/Projetos/Sistema-de-Gestao-com-DOTNET/Api/Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/daniel/Área de trabalho/API-Gestao-Assincrona-sem-docker/Api/Api.csproj",
+        "projectUniqueName": "/home/daniel/Projetos/Sistema-de-Gestao-com-DOTNET/Api/Api.csproj",
         "projectName": "Api",
-        "projectPath": "/home/daniel/Área de trabalho/API-Gestao-Assincrona-sem-docker/Api/Api.csproj",
+        "projectPath": "/home/daniel/Projetos/Sistema-de-Gestao-com-DOTNET/Api/Api.csproj",
         "packagesPath": "/home/daniel/.nuget/packages/",
-        "outputPath": "/home/daniel/Área de trabalho/API-Gestao-Assincrona-sem-docker/Api/obj/",
+        "outputPath": "/home/daniel/Projetos/Sistema-de-Gestao-com-DOTNET/Api/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/daniel/.nuget/NuGet/NuGet.Config"
@@ -511,15 +512,15 @@
           "net10.0"
         ],
         "sources": {
-          "/usr/lib/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net10.0": {
+            "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "/home/daniel/Área de trabalho/API-Gestao-Assincrona-sem-docker/Api.Core/Api.Core.csproj": {
-                "projectPath": "/home/daniel/Área de trabalho/API-Gestao-Assincrona-sem-docker/Api.Core/Api.Core.csproj"
+              "/home/daniel/Projetos/Sistema-de-Gestao-com-DOTNET/Api.Core/Api.Core.csproj": {
+                "projectPath": "/home/daniel/Projetos/Sistema-de-Gestao-com-DOTNET/Api.Core/Api.Core.csproj"
               }
             }
           }
@@ -534,10 +535,11 @@
           "auditLevel": "low",
           "auditMode": "all"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "10.0.400"
       },
       "frameworks": {
         "net10.0": {
+          "framework": "net10.0",
           "targetAlias": "net10.0",
           "dependencies": {
             "Bogus": {
@@ -604,7 +606,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/10.0.106/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.403/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

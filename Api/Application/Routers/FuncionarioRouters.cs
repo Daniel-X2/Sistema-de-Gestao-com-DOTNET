@@ -2,6 +2,7 @@ using Api.Core.Application.service;
 using auth.Models;
 using Dto;
 using auth.Services;
+using System.Security.Cryptography;
 namespace Api.Routers;
 
 /// <summary>
@@ -28,10 +29,16 @@ public class FuncionarioRouters
                 }
                 return  Results.Ok(token.Generate(new Users(body.cpf,body.Senha,new []{"User"}),n1.isadmin));
             
-            });
+            }).WithSummary("Realizar login")
+.WithDescription("""
+Credenciais para teste:
+{
+  "cpf": "78069320036",
+  "senha": "123"
+}
+""");;
             app.MapGet("/funcionario/get",async Task<IResult> (IServiceFuncionario service,int page=1,int limit=100) =>
             {
-              
                 var funcionario= await service.GetAll(limit, page);
                 return Results.Ok(funcionario) ;
                 
