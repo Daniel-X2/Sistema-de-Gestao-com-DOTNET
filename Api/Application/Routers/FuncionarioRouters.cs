@@ -17,19 +17,20 @@ public class FuncionarioRouters
         /// <param name="app">WebApplication para mapeamento.</param>
         public  async  Task Router(WebApplication app)
         {
-            app.MapPost("/login/", async Task<IResult> (FuncionarioJsonBody body,IServiceFuncionario service,IConfiguration config,TokenService token) =>
+            app.MapPost("/funcionario/login", async Task<IResult> (FuncionarioJsonBody body,IServiceFuncionario service,IConfiguration config,TokenService token) =>
             {
-                
                 var n1 = await service.Admin(body.cpf);
                 
                 if (Crypto.VerificarHash(body.Senha,n1.SenhaHash))
                 {
-                   return Results.Ok(token.Generate(new Users(body.cpf, body.Senha, new[] { "Admin" }), n1.isadmin));
-                    
+                    if (n1.isadmin)
+                    {
+                       return Results.Ok(token.Generate(new Users(body.cpf, body.Senha, new[] { "Admin" }), n1.isadmin)); 
+                    }
+                    return  Results.Ok(token.Generate(new Users(body.cpf,body.Senha,new []{"User"}),n1.isadmin));
                 }
-                return  Results.Ok(token.Generate(new Users(body.cpf,body.Senha,new []{"User"}),n1.isadmin));
-            
-            }).WithSummary("Realizar login")
+                return Results.BadRequest("Senha incorreta");
+            }).WithTags(" Login").WithSummary("Realizar login")
 .WithDescription("""
 Credenciais para teste:
 {
@@ -51,10 +52,14 @@ Credenciais para teste:
                 return Results.Ok(campo);
             }).WithTags("Funcionario").WithSummary("Lista o funcionario com o ID").WithDescription("Busca e retorna os detalhes de um funcionário específico através do seu ID único.").RequireAuthorization();
 
-            app.MapDelete("/Funcionario/delete/{id}", async Task<IResult> (int id,IServiceFuncionario n1) =>
-            {
+            app.MapDelete("/funcionario/delete/{id}", async Task<IResult> (int id,IServiceFuncionario n1) =>
+            {   
+                 if (id == 1)
+                {
+                    return  Results.BadRequest("Nao pode deletar esse usuario");
+                }
                 bool resultado =await n1.DeleteFuncionarioService(id);
-              
+
                 if (resultado)
                 {
                     return  Results.Ok();
@@ -78,15 +83,16 @@ Credenciais para teste:
 
             app.MapPut("funcionario/update/{id}/", async Task<IResult> (int id,FuncionarioDto campos, IServiceFuncionario service) =>
             {
-            bool resultado=  await  service.UpdateFuncionarioService(campos, id);
-            if (resultado)
-            {
-                return  Results.Ok("atualizado com sucesso");
-            }
+                if (id == 1)
+                {
+                    return  Results.BadRequest("Nao se pode atualizar as informaçoes desse usuario");
+                }
+                bool resultado=  await  service.UpdateFuncionarioService(campos, id);
+                if (resultado)
+                {
+                    return  Results.Ok("atualizado com sucesso");
+                }
             return Results.BadRequest("erro ao atualizar");
             }).WithTags("Funcionario").WithSummary("Atualiza o funcionario").WithDescription("Atualiza as informações de um funcionário já existente com base no ID. Retorna o status da atualização.").RequireAuthorization();
-
-        }
-        
-        
+        }       
 }

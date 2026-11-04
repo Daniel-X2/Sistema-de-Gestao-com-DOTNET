@@ -18,16 +18,16 @@ namespace Utils
     /// <exception cref="InvalidCpfException">Lançada se o CPF for nulo, incompleto ou tiver dígitos verificadores incorretos.</exception>
     public string IsValidDigit(string cpf)
     {
-        
-        if (string.IsNullOrWhiteSpace(cpf))
+        int lengthCpf=cpf.Length;
+        if (lengthCpf != 11)
         {
             throw new InvalidCpfException(cpf);
         }
 
         StringBuilder _cpf = new StringBuilder(string.Empty,12);
         
-            
-        for (int c=0;c<cpf.Length;c++ )
+        
+        for (int c=0;c<lengthCpf;c++ )
         {
             if (char.IsNumber(cpf[c]))
             {
@@ -37,10 +37,6 @@ namespace Utils
         cpf = _cpf.ToString();
         _cpf.Clear();
         
-        if (cpf.Length != 11)
-        {
-            throw new InvalidCpfException(cpf);
-        }
         int.TryParse(cpf[9].ToString(),out int digito1);
         int.TryParse(cpf[10].ToString(),out int digito2);
             
@@ -148,7 +144,7 @@ namespace Utils
             return (resto < 2) ? 0 : 11 - resto;
         }
         
-        return 00;
+        return 0;
     }
 
     /// <summary>
@@ -163,7 +159,7 @@ namespace Utils
         int idadeMaxima = 85;
         int idadeMinima = 18;
         
-        if (ano > anoAtual || int.IsNegative(ano))
+        if (ano > anoAtual || ano<0)
         {
             throw new InvalidNascimentoException(ano);
         }

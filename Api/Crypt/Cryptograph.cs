@@ -11,7 +11,7 @@ public class Crypto
             return true;
         }
 
-        throw new InvalidPassword();
+        return false;
     }
 
     public static  string RetornHash(string text)

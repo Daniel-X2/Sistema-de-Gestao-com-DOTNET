@@ -3,8 +3,8 @@ services:
     build: 
       context: ..
       dockerfile: Dockerfile
-    image: danizura/api-gestao-assincrona-api-s:1.0
-    container_name: api
+    image: danizura/api-gestao-dotnet
+    container_name: api-gestao-dotnet
     environment:
       - ASPNETCORE_HTTP_PORTS=5153
       - ASPNETCORE_ENVIRONMENT=Development
@@ -15,7 +15,7 @@ services:
     build:
       context: ..
       dockerfile: Dockerfile_db
-    container_name: postgres_dba
+    container_name: postgres_db
     image: danizura/postgres_a
     env_file:
      -  .env

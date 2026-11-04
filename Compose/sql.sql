@@ -33,3 +33,5 @@ CREATE TABLE produto(
 	lote int 
 );
 INSERT INTO  funcionario (nome, cpf, senha_hash, isadmin, quantidade_atestado, nascimento, data)  VALUES ('padrao','78069320036','$2a$04$/ca.DjsxDIDKJijtonI7G.wpzKp2BgGpnW6hPMMtlI2Y.avHtyGzW',true,0,2000, 2024);
+INSERT INTO cliente (nome, cpf, conta, isvip, data, empresa)
+VALUES ('Cliente Teste', '52998224725', 1001, TRUE, 20261029, 'Tech Solutions');

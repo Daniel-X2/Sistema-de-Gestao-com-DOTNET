@@ -67,7 +67,7 @@ namespace Api
                     Scheme = "bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Insira apenas o token JWT abaixo."
+                    Description = "Insira apenas o token JWT abaixo sem Aspas."
                 });
 
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
