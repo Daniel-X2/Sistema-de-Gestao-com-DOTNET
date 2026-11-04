@@ -54,8 +54,6 @@ A documentação interativa (**Swagger**) fica na raiz da URL: basta fazer login
 | API em produção + Swagger | https://api-gestao-dotnet.onrender.com |
 | Vídeo: autenticação JWT e endpoints protegidos | https://youtu.be/g3xyDaQyCmI |
 
-> Se a instância estiver em repouso, a primeira requisição pode levar alguns segundos (~3 s) para "acordar" o serviço. Depois disso, o login responde em dezenas de milissegundos (veja [Desempenho](#desempenho-em-produção)).
-
 **Credencial de demonstração** (protegida: não pode ser removida nem alterada pela API):
 
 ```json
