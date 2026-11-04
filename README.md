@@ -101,16 +101,6 @@ A documentação interativa (**Swagger**) fica na raiz da URL: basta fazer login
 | Hospedagem | Render (API) + Supabase (PostgreSQL) |
 | Padrões | Injeção de Dependência, Repository, Service Layer, Middleware |
 
-## Arquitetura
-
-```mermaid
-flowchart LR
-    C[Cliente / Swagger] -->|HTTP + JWT| M[Middleware de exceções<br/>+ Rate Limiting]
-    M --> R[Routers<br/>Minimal APIs]
-    R --> S[Services<br/>regras de negócio e validações]
-    S --> P[Repositories<br/>SQL com Npgsql]
-    P --> DB[(PostgreSQL)]
-```
 
 Cada camada tem uma responsabilidade clara:
 
