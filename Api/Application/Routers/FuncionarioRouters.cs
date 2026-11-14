@@ -38,19 +38,22 @@ Credenciais para teste:
   "senha": "123"
 }
 """);;
-            app.MapGet("/funcionario/get",async Task<IResult> (IServiceFuncionario service,int page=1,int limit=100) =>
-            {
-                var funcionario= await service.GetAll(limit, page);
-                return Results.Ok(funcionario) ;
-                
-            }).WithTags("Funcionario").WithSummary("Lista os funcionarios").WithDescription("Retorna uma lista de todos os funcionários cadastrados, incluindo seus IDs para operações futuras.").RequireAuthorization("Admin");
+            app.MapGet("/funcionario/get",
+                    async Task<IResult> (IServiceFuncionario service, int page = 1, int limit = 100) =>
+                    {
+                        var funcionario = await service.GetAll(limit, page);
+                        return Results.Ok(funcionario);
+
+                    }).WithTags("Funcionario").WithSummary("Lista os funcionarios")
+                .WithDescription(
+                    "Retorna uma lista de todos os funcionários cadastrados, incluindo seus IDs para operações futuras.");//.RequireAuthorization("Admin");
             
         
             app.MapGet("/funcionario/get/{id}",async Task<IResult>(int id,IServiceFuncionario n1) =>
             {
                 var campo =await n1.GetByIdService(id);
                 return Results.Ok(campo);
-            }).WithTags("Funcionario").WithSummary("Lista o funcionario com o ID").WithDescription("Busca e retorna os detalhes de um funcionário específico através do seu ID único.").RequireAuthorization();
+            }).WithTags("Funcionario").WithSummary("Lista o funcionario com o ID").WithDescription("Busca e retorna os detalhes de um funcionário específico através do seu ID único.");//.RequireAuthorization();
 
             app.MapDelete("/funcionario/delete/{id}", async Task<IResult> (int id,IServiceFuncionario n1) =>
             {   
@@ -65,7 +68,7 @@ Credenciais para teste:
                     return  Results.Ok();
                 }
                 return  Results.BadRequest();
-            }).WithTags("Funcionario").WithSummary("Excluir funcionario por ID").WithDescription("Remove o registro de um funcionário do sistema utilizando seu ID. Retorna OK se removido com sucesso.").RequireAuthorization();
+            }).WithTags("Funcionario").WithSummary("Excluir funcionario por ID").WithDescription("Remove o registro de um funcionário do sistema utilizando seu ID. Retorna OK se removido com sucesso.");//.RequireAuthorization();
 
             app.MapPost("/funcionario/add/",async Task<IResult> (FuncionarioDto campos, IServiceFuncionario service) =>
             {
@@ -79,7 +82,7 @@ Credenciais para teste:
                     
                      return Results.BadRequest("erro ao adicionar");
                      
-            }).WithTags("Funcionario").WithSummary("Adiciona funcionario").WithDescription("Cadastra um novo funcionário no sistema com os dados fornecidos. Retorna sucesso ou erro no processamento.").RequireAuthorization();
+            }).WithTags("Funcionario").WithSummary("Adiciona funcionario").WithDescription("Cadastra um novo funcionário no sistema com os dados fornecidos. Retorna sucesso ou erro no processamento.");//.RequireAuthorization();
 
             app.MapPut("funcionario/update/{id}/", async Task<IResult> (int id,FuncionarioDto campos, IServiceFuncionario service) =>
             {
@@ -93,6 +96,6 @@ Credenciais para teste:
                     return  Results.Ok("atualizado com sucesso");
                 }
             return Results.BadRequest("erro ao atualizar");
-            }).WithTags("Funcionario").WithSummary("Atualiza o funcionario").WithDescription("Atualiza as informações de um funcionário já existente com base no ID. Retorna o status da atualização.").RequireAuthorization();
+            }).WithTags("Funcionario").WithSummary("Atualiza o funcionario").WithDescription("Atualiza as informações de um funcionário já existente com base no ID. Retorna o status da atualização.");//.RequireAuthorization();
         }       
 }

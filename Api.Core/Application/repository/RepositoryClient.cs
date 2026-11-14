@@ -38,10 +38,8 @@ internal class RepositoryClient(ConnectHost host):IRepositoryClient
     public async Task<ListaClient>  GetAllClient(int page,int limit)
     {
         var context = host;
-        var list=await context.cliente.Skip(page).Take(10).ToListAsync();
-        
-        
-        
+        var list=await context.cliente.ToListAsync();
+
         ListaClient lista=new();
 
 

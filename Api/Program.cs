@@ -1,7 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Api.Core.Application.utils;
-
 using Microsoft.AspNetCore.RateLimiting;
 using auth.Services;
 using Microsoft.IdentityModel.Tokens;
@@ -95,8 +94,8 @@ namespace Api
                 c.RoutePrefix = string.Empty;
             });
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+           // app.UseAuthentication();
+           // app.UseAuthorization();
             app.UseSerilogRequestLogging();
             app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseRateLimiter();
