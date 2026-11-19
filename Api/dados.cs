@@ -10,7 +10,7 @@ public class ReturnDados
     public static  ClientDto ReturnCLient()
     {
         var n1 = new Faker("pt_BR");
-        ClientDto client = new ClientDto();
+        ClientDto client = new ();
         //Console.WriteLine(n1.Person.Cpf());
         client.Cpf= n1.Person.Cpf();
         client.Conta = n1.Random.Int(min:10,max:9000);

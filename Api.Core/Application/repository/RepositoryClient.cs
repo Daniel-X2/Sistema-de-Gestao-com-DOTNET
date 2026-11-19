@@ -38,7 +38,9 @@ internal class RepositoryClient(ConnectHost host):IRepositoryClient
     public async Task<ListaClient>  GetAllClient(int page,int limit)
     {
         var context = host;
-        var list=await context.cliente.ToListAsync();
+        var take = limit > 0 ? limit : 100;
+        var skip = (page > 1 ? page - 1 : 0) * take;
+        var list=await context.cliente.OrderBy(cl => cl.id).Skip(skip).Take(take).ToListAsync();
 
         ListaClient lista=new();
 
@@ -70,9 +72,12 @@ internal class RepositoryClient(ConnectHost host):IRepositoryClient
     { 
         
         
-        await using var context=host;
-        var resultado= context.cliente.Where(cl => cl.id == id).First();
-        
+        var context = host;
+        var resultado=await context.cliente.Where(cl => cl.id == id).FirstOrDefaultAsync();
+            if (resultado is null)
+            {
+                return null;
+            }
         
         ClientDto campos=new();
         campos.Id=resultado.id;
@@ -93,7 +98,7 @@ internal class RepositoryClient(ConnectHost host):IRepositoryClient
     public async Task<int> AddClient(ClientDto campos)
     {
         
-        await using var context=host;
+        var context = host;
         await context.cliente.AddAsync(new cliente( ){nome=campos.Nome,cpf = campos.Cpf,conta = campos.Conta,empresa = campos.Empresa,isvip = campos.Isvip});
         int resultado=await context.SaveChangesAsync();
         
@@ -106,14 +111,8 @@ internal class RepositoryClient(ConnectHost host):IRepositoryClient
     /// <returns>True se existir.</returns>
     public async Task<bool> ExistsAccount(int Conta)
     {
-        await using var context=host;
-            var resultado = context.cliente.Where(cliente=> cliente.conta==Conta).First();
-            if (resultado==null)
-            {
-                return true;
-            }
-            return false;
-       
+        var context = host;
+        return await context.cliente.AnyAsync(cliente => cliente.conta == Conta);
     }
     /// <summary>
     /// Verifica se um CPF já está cadastrado para algum cliente.
@@ -122,23 +121,16 @@ internal class RepositoryClient(ConnectHost host):IRepositoryClient
     /// <returns>True se existir.</returns>
     public async Task<bool> ExistsCpf(string cpf)
     {
-        await using var context=host;
-        var resultado = context.cliente.Where(cliente=> cliente.cpf==cpf).Count();
-        //talvez seja mais economico
-        //var resultado= context.cliente.Single(cliente => cliente.cpf == cpf);
-        if (resultado >= 1)
-        {
-            return true;
-        }
-        return false;
+        var context = host;
+        return await context.cliente.AnyAsync(cliente => cliente.cpf == cpf);
     }
 
     public async Task<Int64> QuantidadeClient()
     {
         
-        await using var context=host;
-        var resultado = await context.cliente.ToListAsync();
-        return resultado.Count;
+        var context = host;
+        var resultado = await context.cliente.CountAsync();
+        return resultado;
     }
     /// <summary>
     /// Atualiza os dados de um cliente pelo ID.
@@ -148,9 +140,13 @@ internal class RepositoryClient(ConnectHost host):IRepositoryClient
     /// <returns>Número de linhas afetadas.</returns>
     public  async Task<int> UpdateClient(ClientDto campos,int id)
     {
-        await using var context=host;
-        context.cliente.Update(new cliente{nome=campos.Nome,cpf = campos.Cpf,conta = campos.Conta,empresa = campos.Empresa,isvip = campos.Isvip});
-        int resultado= await context.SaveChangesAsync();
+        var context = host;
+       var resultado= await  context.cliente.Where(cl=>cl.id==id).ExecuteUpdateAsync(setter=>setter.SetProperty(cl=>cl.nome,campos.Nome)
+        .SetProperty(cl=>cl.cpf,campos.Cpf)
+        .SetProperty(cl=>cl.conta,campos.Conta).
+        SetProperty(cl=>cl.empresa , campos.Empresa)
+        .SetProperty(cl=>cl.isvip, campos.Isvip));
+        // resultado= await context.SaveChangesAsync();
         
         return  resultado;
     }
@@ -161,7 +157,7 @@ internal class RepositoryClient(ConnectHost host):IRepositoryClient
     /// <returns>Número de linhas afetadas.</returns>
     public  async Task<int> DeleteClient(int id)
     {
-        await using var context=host;
+        var context = host;
         int resultado= await context.cliente.Where(cl=>cl.id==id).ExecuteDeleteAsync();
         //revisar e colocar pra pegar por id
         
@@ -174,10 +170,10 @@ internal class RepositoryClient(ConnectHost host):IRepositoryClient
     /// <returns>ID do cliente ou 0 se não encontrado.</returns>
     public  async Task<int> GetIdByCpf(string cpf)
     {
-        await using var context=host;
-       var resultado= context.cliente.Where(cl => cl.cpf == cpf).Select(cl => cl.id).First();
-       
-       return resultado;
+        var context = host;
+        var resultado=await context.cliente.Where(cl => cl.cpf == cpf).Select(cl => cl.id).FirstOrDefaultAsync();
+    
+        return resultado;
     }
     
 }

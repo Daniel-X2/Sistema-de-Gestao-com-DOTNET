@@ -94,8 +94,8 @@ namespace Api
                 c.RoutePrefix = string.Empty;
             });
 
-           // app.UseAuthentication();
-           // app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseSerilogRequestLogging();
             app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseRateLimiter();

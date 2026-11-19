@@ -18,9 +18,7 @@ services:
     container_name: postgres_db
     image: danizura/postgres_a
     env_file:
-     -  .env
-    
-    
+     -  .env  
     volumes:
       - ./sql.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres_data:/var/lib/postgresql/18/docker

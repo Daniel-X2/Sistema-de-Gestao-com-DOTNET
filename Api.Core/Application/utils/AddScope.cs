@@ -13,12 +13,12 @@ public class AddScope
         
         builder.Services.AddScoped<IRepositoryClient,RepositoryClient>();
         builder.Services.AddScoped<IServiceClient, ServiceClient>();
-        /*
+        
         builder.Services.AddScoped<IServiceProduct, ServiceProduct>();
         builder.Services.AddScoped<IRepositoryProduct, RepositoryProduct>();
 
         builder.Services.AddScoped<IDashboardService, DashboardService>();
-        */
+        
         builder.Services.AddScoped<IRepositoryFuncionario,RepositoryFuncionario>();
         builder.Services.AddScoped<IServiceFuncionario,ServiceFuncionario>();
 
