@@ -17,7 +17,7 @@ Autenticação JWT · RBAC · Entity Framework Core · PostgreSQL · Docker · D
 
 [**API ADO.NET**](https://api-gestao-dotnet-ado.onrender.com/) · [**API EF Core**](https://api-gestao-dotnet-ef.onrender.com/) · [**Vídeo de demonstração**](https://youtu.be/g3xyDaQyCmI)
 
-> Duas versões publicadas no Render, **usando o mesmo banco PostgreSQL no Supabase**: a branch `main` (ADO.NET/Npgsql) e a branch `ef` (Entity Framework Core). As diferenças da branch `ef` estão destacadas ao longo do documento.
+> Duas versões publicadas no Render, **usando o mesmo banco PostgreSQL no Supabase**: a branch `ADO` (ADO.NET/Npgsql) e a branch `ef` (Entity Framework Core). As diferenças da branch `ef` estão destacadas ao longo do documento.
 
 </div>
 
@@ -30,6 +30,7 @@ Autenticação JWT · RBAC · Entity Framework Core · PostgreSQL · Docker · D
 - [Demonstração](#demonstração)
 - [Destaques técnicos](#destaques-técnicos)
 - [Tecnologias](#tecnologias)
+  - [Inventário técnico (versões e pacotes)](#inventário-técnico-versões-e-pacotes)
 - [Arquitetura](#arquitetura)
 - [Estrutura do projeto](#estrutura-do-projeto)
 - [Modelo de dados](#modelo-de-dados)
@@ -39,8 +40,10 @@ Autenticação JWT · RBAC · Entity Framework Core · PostgreSQL · Docker · D
 - [Logs](#logs)
 - [Testes](#testes)
 - [Desempenho em produção](#desempenho-em-produção)
+  - [Comparação entre deploys (ADO.NET vs EF Core)](#comparação-entre-deploys-adonet-vs-ef-core)
 - [Como executar](#como-executar)
 - [Deploy](#deploy)
+  - [CI/CD](#cicd)
 - [Autor](#autor)
 
 ---
@@ -53,6 +56,8 @@ A documentação interativa (**Swagger**) fica na raiz da URL: basta fazer login
 
 Nesta branch, o acesso a dados foi migrado de ADO.NET puro para **Entity Framework Core 10** com o provider **Npgsql**. A aplicação continua com a mesma arquitetura em camadas, DTOs, JWT, BCrypt e Serilog.
 
+> **Resumo técnico:** .NET 10 / C# / ASP.NET Core Minimal APIs / EF Core 10 + Npgsql / PostgreSQL 18 no Supabase / JWT + BCrypt / Serilog / Swagger / xUnit v3 + Moq + Bogus / Docker + Docker Compose / GitHub Actions + Docker Hub / Render / Locust.
+
 ## Estado da branch `ef`
 
 Principais diferenças em relação à branch `main`:
@@ -64,6 +69,18 @@ Principais diferenças em relação à branch `main`:
 - **`codigo` persistido no cadastro de produto**; verificação de duplicidade usa `AnyAsync`/`Count`.
 - **`senha_hash` não é carregada nas listagens de funcionários**: consultas projetam apenas as colunas necessárias. O hash é lido somente no login e gravado no cadastro.
 - **Autorização aplicada**: todas as rotas exceto o login exigem JWT; a listagem de funcionários exige a policy `Admin` (ver [Endpoints](#endpoints)).
+
+### Validações locais da branch `ef`
+
+Feitas com a API local na porta `5153` e PostgreSQL em `localhost:5433`, antes dos testes dos deploys:
+
+- `ExistsAccount`/`ExistsCpf` corrigidos com `AnyAsync` → cadastro de cliente novo voltou a funcionar; duplicado retorna `422`.
+- `First()` substituído por `FirstOrDefaultAsync` → "não encontrado" passou a responder `400`/`422` em vez de `500`.
+- `AddProduct` passou a gravar o campo `codigo`; código duplicado retorna `422`.
+- Paginação com `OrderBy(id).Skip/Take` nas listagens (SQL com `LIMIT/OFFSET`).
+- `senha_hash` removida das consultas de listagem/`get` de funcionário.
+- `Validation.cs` (cálculo do CPF) **não** foi alterado, por decisão explícita.
+- Build da solution: **0 erros**.
 
 ## Demonstração
 
@@ -121,6 +138,75 @@ Principais diferenças em relação à branch `main`:
 | Hospedagem | Render (API) + Supabase (PostgreSQL) |
 | Padrões | Injeção de Dependência, Repository, Service Layer, Middleware |
 
+### Inventário técnico (versões e pacotes)
+
+**Linguagem / plataforma**
+
+- C# com .NET 10 (`net10.0`) e SDK `10.0.404`
+- ASP.NET Core — Minimal APIs
+- Solution `Api.sln` com 3 projetos: `Api`, `Api.Core`, `Api.Test`
+- `Nullable` e `ImplicitUsings` habilitados
+
+**Arquitetura / padrões**
+
+- Arquitetura em camadas: Routers → Services → Repositories → DbContext
+- Injeção de dependência nativa (`IServiceCollection`), `AddDbContextPool` + `AddScoped`
+- Repository Pattern + Service Pattern, DTOs e exceções customizadas de domínio
+- `InternalsVisibleTo` (`Api.Test` e `DynamicProxyGenAssembly2`); modelo de usuário com C# `record`
+
+**Acesso a dados**
+
+- Entity Framework Core 10, `Npgsql.EntityFrameworkCore.PostgreSQL` 10.0.3 e `Npgsql` 10.0.3
+- `Microsoft.EntityFrameworkCore.InMemory` 8.0.0 e `Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore` 8.0.0
+- PostgreSQL 18 (imagem `postgres:18.3-alpine3.23`); Supabase em produção
+- LINQ/consultas assíncronas: `AnyAsync`, `FirstOrDefaultAsync`, `CountAsync`, `ToListAsync`, `ExecuteUpdateAsync`, `ExecuteDeleteAsync`, `Skip/Take` e projeções
+- SQL de inicialização via `/docker-entrypoint-initdb.d` (`sql.sql`)
+
+**Autenticação / segurança**
+
+- `Microsoft.AspNetCore.Authentication.JwtBearer` 10.0.5 e `Microsoft.AspNetCore.Authentication` 2.3.9
+- HS256, expiração de 2h, issuer/audience
+- RBAC com policies `Admin` e `User` (`RequireRole`)
+- `BCrypt.Net-Next` 4.2.0 (hash de senha)
+- Rate limiting nativo: `AddRateLimiter`, política `fixed` (5 req/min)
+- ASP.NET Core DataProtection; CPF como credencial de login
+
+**Logs / observabilidade**
+
+- Serilog 4.3.1, `Serilog.AspNetCore` 10.0.0, `Serilog.Sinks.Console` 6.1.1 e `Serilog.Sinks.File` 7.0.0 (rotação diária)
+
+**Documentação da API**
+
+- Swagger/OpenAPI via `Swashbuckle.AspNetCore.SwaggerGen` 6.8.1 e `Swashbuckle.AspNetCore.SwaggerUI` 6.8.1
+- Esquema Bearer global e UI na raiz (`/`)
+
+**Testes**
+
+- xUnit v3 3.2.2 (`OutputType=Exe` / Microsoft.Testing.Platform) e `Microsoft.NET.Test.Sdk` 18.3.0
+- Moq 4.20.72 e Bogus 35.6.5 (dados falsos, locale `pt_BR`, CPF)
+- 29 casos executáveis; Locust para testes de carga
+
+**Configuração**
+
+- DotNetEnv 3.2.0 (arquivos `.env`)
+- Variáveis de ambiente: `DB_CONNECTION`, `JWT_KEY`, `JWT_ISSUER`, `JWT_AUDIENCE`, `POSTGRES_PASSWORD`, `ASPNETCORE_HTTP_PORTS`, `ASPNETCORE_ENVIRONMENT`
+- `appsettings.json` / `appsettings.Development.json`, `launchSettings.json` (IIS Express / perfis locais) e `UserSecretsId` declarado nos `.csproj`
+
+**Containers / Compose**
+
+- Docker multi-stage: build em `mcr.microsoft.com/dotnet/sdk:10.0`, runtime em `mcr.microsoft.com/dotnet/aspnet:10.0`, usuário não-root `appuser`, `dotnet publish -c release`, `EXPOSE 5153`
+- `Dockerfile_db`: `postgres:18.3-alpine3.23`, `EXPOSE 5432`
+- Docker Compose (sintaxe `services:`, volumes nomeados): `Compose/docker-compose.yml` (API + PostgreSQL, portas `5153` e `5433`) e `Teste Local/docker-compose.yml` (somente PostgreSQL, porta `5433`)
+- Imagens no Docker Hub: `danizura/api-gestao-dotnet:EF` e `danizura/postgres_a`
+
+**CI/CD / deploy**
+
+- GitHub Actions em `ubuntu-latest`: `.github/workflows/docker.yaml` (build e push da imagem), `deploy.yaml` (hook de deploy) e `tests.yaml.` (build e teste — nome inválido)
+- `actions/checkout@v6` (docker.yaml) e `@v3` (deploy.yaml / tests.yaml.), `actions/setup-dotnet@v4` (`10.x`), `docker/login-action@v4`, `docker/build-push-action@v7`, `actions/attest@v4`
+- Secrets: `USERNAME_DOCKER`, `PASSWORD_DOCKER`, `HOOK_RENDER_EF`
+- Render com 2 versões (ADO.NET e EF Core) na região Virginia; deploy disparado por webhook via `curl`
+
+> O badge de CI no topo deste documento referencia `.github/workflows/desenvolvimento.yaml`, presente na branch `main`; nesta branch `ef` os workflows disponíveis são os listados acima.
 
 ## Arquitetura
 
@@ -343,9 +429,10 @@ Cada requisição é registrada com método HTTP, rota, status code e tempo de r
 
 Cobrem a camada de serviço com mocks dos repositórios, sem necessidade de banco de dados real.
 
-- **xUnit**: execução dos testes
-- **Moq**: mock das interfaces de repositório
-- **Bogus**: geração de dados falsos
+- **xUnit v3 3.2.2**: execução dos testes (`OutputType=Exe` / Microsoft.Testing.Platform)
+- **Moq 4.20.72**: mock das interfaces de repositório
+- **Bogus 35.6.5**: geração de dados falsos (locale `pt_BR`, CPF)
+- **29 casos executáveis** no total
 
 ```bash
 dotnet test
@@ -415,6 +502,87 @@ Com a API na mesma costa do banco, o tempo de resposta caiu de forma consistente
 - Remoção de verificações redundantes.
 - Testes de isolamento, removendo temporariamente a validação de CPF e o BCrypt, para identificar quanto cada etapa pesava no tempo do login.
 - Reposicionamento da API na mesma região do banco.
+
+### Comparação entre deploys (ADO.NET vs EF Core)
+
+Teste realizado em **19/11/2026** nas duas APIs publicadas no Render, apontando para o **mesmo banco PostgreSQL no Supabase (US East)**. Nenhuma escrita foi feita no banco: apenas login e requisições `GET`.
+
+**Ambiente**
+
+| Versão | Branch | URL |
+|---|---|---|
+| ADO.NET | `main` | https://api-gestao-dotnet-ado.onrender.com/ |
+| EF Core | `ef` | https://api-gestao-dotnet-ef.onrender.com/ |
+
+Credencial de teste: CPF `78069320036` / senha `123`.
+
+**Metodologia**
+
+- Requisições sequenciais via Python (`urllib`), medidas com `time.perf_counter()`.
+- *Warm-up* antes da contagem.
+- Rodada A: 10 amostras por endpoint (login, `client/get`, `client/quantidade`, `funcionario/get`) + teste sem token.
+- Rodada B: 5 amostras por endpoint (login, `swagger.json`, `client/get`, `client/quantidade`, `funcionario/get`, `product/get`, `estoque/get`, `estoque/valorBruto`, `dashboard/stats`).
+- Valores em milissegundos, medidos da máquina local até o Render (Virginia). A latência de rede domina; diferenças de poucos ms estão dentro do ruído.
+
+**Rodada A — 10 amostras (após aquecimento)**
+
+| Endpoint | ADO.NET | EF Core |
+|---|---|---|
+| `POST /funcionario/login` | med 223 ms · média 230 · min 199 / max 326 | med 262 ms · média 300 · min 205 / max 503 |
+| `GET /client/get/` | med 197 ms · média 201 · p10 195 / p90 209 · min 189 / max 225 | med 219 ms · média 428 · p10 196 / p90 316 · min 195 / max 2208 (*) |
+| `GET /client/quantidade` | med 200 ms · média 208 · min 188 / max 287 | med 201 ms · média 245 · min 195 / max 623 |
+| `GET /funcionario/get` | med 197 ms · média 200 · min 187 / max 223 | med 197 ms · média 205 · min 194 / max 242 |
+
+(*) Pico isolado de 2208 ms em uma amostra do EF; não se repetiu na rodada seguinte. Provável *cold start*/*hiccup* do Render.
+
+**Rodada B — 5 amostras (mais endpoints)**
+
+| Endpoint | ADO.NET | EF Core | Status |
+|---|---|---|---|
+| `POST /funcionario/login` | med 197 ms | med 201 ms | 200 |
+| `GET /swagger/v1/swagger.json` | med 194 ms | med 202 ms | 200 |
+| `GET /client/get/` | med 194 ms | med 202 ms | 200 |
+| `GET /client/quantidade` | med 203 ms | med 200 ms | 200 |
+| `GET /funcionario/get` | med 200 ms | med 263 ms | 200 |
+| `GET /product/get` | med 199 ms | med 206 ms | 400 (*) |
+| `GET /estoque/get` | med 196 ms | med 205 ms | 400 (*) |
+| `GET /estoque/valorBruto` | med 200 ms | med 208 ms | 400 (*) |
+| `GET /dashboard/stats` | med 204 ms | med 214 ms | 400 (*) |
+
+(*) `400` com `{"erro":"nao teve correspondecia aos dados solicitados"}`: a tabela `produto` está vazia no banco compartilhado. Isso confirma que os dois deploys usam o mesmo banco.
+
+Primeiro acesso após ocioso (rodada inicial): login ADO chegou a 3029 ms e login EF a 677 ms; depois estabiliza em ~195–200 ms.
+
+**Autorização (sem token)**
+
+Primeira verificação, antes do redeploy do EF:
+
+| Rota | ADO.NET | EF Core |
+|---|---|---|
+| `/client/get/` | 401 | 200 (aberta) |
+| `/funcionario/get` | 401 | 200 (aberta) |
+| `/product/get` | 401 | 401 |
+| `/dashboard/stats` | 401 | 401 |
+
+→ O deploy EF ainda não tinha o commit `ab0550e` (`RequireAuthorization` descomentado nas rotas de cliente e funcionário).
+
+Depois do redeploy (teste refeito):
+
+| Rota | ADO.NET | EF Core |
+|---|---|---|
+| `/client/get/` | 401 | 401 |
+| `/funcionario/get` | 401 | 401 |
+| `/product/get` | 401 | 401 |
+| `/dashboard/stats` | 401 | 401 |
+
+→ Corrigido. Os dois deploys estão consistentes com este documento.
+
+**Conclusão**
+
+- Login e listagens respondem `200` com token nos dois deploys.
+- Mediana geral: ~195–205 ms (ADO) contra ~200–215 ms (EF). Não há diferença estatisticamente relevante; a rede domina a medição.
+- Rotas protegidas: `401` sem token nos dois após o redeploy do EF.
+- Produtos/estoque/dashboard retornam `400` nos dois por falta de dados, não por falha de autenticação ou conexão.
 
 ## Como executar
 
@@ -493,7 +661,19 @@ dotnet run --launch-profile http
 
 As duas versões usam a mesma imagem base e as mesmas variáveis de ambiente (`DB_CONNECTION` apontando para o Supabase e os segredos JWT configurados no painel do Render). A diferença entre elas é a camada de acesso a dados: **ADO.NET/Npgsql** na `main` e **Entity Framework Core** na `ef`. Como apontam para o mesmo banco, os dados são compartilhados; alterações feitas em uma aparecem na outra.
 
-As métricas da seção [Desempenho em produção](#desempenho-em-produção) são registros históricos das medições feitas no projeto publicado, não um benchmark comparativo entre as duas versões.
+As métricas da seção [Desempenho em produção](#desempenho-em-produção) são registros históricos das medições feitas no projeto publicado, não um benchmark comparativo entre as duas versões. A [comparação entre deploys](#comparação-entre-deploys-adonet-vs-ef-core) traz as medições diretas das duas versões em produção.
+
+### CI/CD
+
+O pipeline roda no GitHub Actions (`ubuntu-latest`), publica a imagem da branch `ef` no Docker Hub e dispara o deploy no Render:
+
+| Workflow | Função |
+|---|---|
+| `.github/workflows/docker.yaml` | build e push de `danizura/api-gestao-dotnet:EF`, com attestation de artefato |
+| `.github/workflows/deploy.yaml` | chamada ao webhook de deploy do Render via `curl` |
+| `.github/workflows/tests.yaml.` | `dotnet build` + `dotnet test` (nome inválido — não reconhecido pelo GitHub Actions) |
+
+Secrets configurados: `USERNAME_DOCKER`, `PASSWORD_DOCKER` e `HOOK_RENDER_EF`. As versões das actions e o inventário completo de dependências estão em [Inventário técnico](#inventário-técnico-versões-e-pacotes). A imagem do banco `danizura/postgres_a` também está publicada no Docker Hub.
 
 ## Autor
 
