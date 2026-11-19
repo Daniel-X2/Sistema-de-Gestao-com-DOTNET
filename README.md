@@ -15,9 +15,9 @@ Autenticação JWT · RBAC · Entity Framework Core · PostgreSQL · Docker · D
 ![Supabase](https://img.shields.io/badge/Database-Supabase-3FCF8E?logo=supabase&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-[**API em produção (Swagger)**](https://api-gestao-dotnet.onrender.com) · [**Vídeo de demonstração**](https://youtu.be/g3xyDaQyCmI)
+[**API ADO.NET**](https://api-gestao-dotnet-ado.onrender.com/) · [**API EF Core**](https://api-gestao-dotnet-ef.onrender.com/) · [**Vídeo de demonstração**](https://youtu.be/g3xyDaQyCmI)
 
-> **Branch `ef`:** esta é a versão em migração para **Entity Framework Core**. As seções de deploy, desempenho e monitoramento abaixo descrevem o projeto publicado (branch `main`); as diferenças desta branch estão destacadas ao longo do documento.
+> Duas versões publicadas no Render, **usando o mesmo banco PostgreSQL no Supabase**: a branch `main` (ADO.NET/Npgsql) e a branch `ef` (Entity Framework Core). As diferenças da branch `ef` estão destacadas ao longo do documento.
 
 </div>
 
@@ -47,7 +47,7 @@ Autenticação JWT · RBAC · Entity Framework Core · PostgreSQL · Docker · D
 
 ## Visão geral
 
-API REST construída com **ASP.NET Core (Minimal APIs)** para gerenciar **clientes**, **funcionários** e **produtos/estoque**, com painel de estatísticas para dashboard. O projeto prioriza **separação de responsabilidades**, **segurança** e **observabilidade**, e o projeto publicado (branch `main`) roda no **Render** com banco **PostgreSQL hospedado no Supabase**.
+API REST construída com **ASP.NET Core (Minimal APIs)** para gerenciar **clientes**, **funcionários** e **produtos/estoque**, com painel de estatísticas para dashboard. O projeto prioriza **separação de responsabilidades**, **segurança** e **observabilidade**, e as duas versões publicadas — branch `main` (ADO.NET) e branch `ef` (EF Core) — rodam no **Render** com o **mesmo banco PostgreSQL hospedado no Supabase**.
 
 A documentação interativa (**Swagger**) fica na raiz da URL: basta fazer login com a credencial de demonstração, copiar o token e testar os endpoints protegidos direto pelo navegador.
 
@@ -69,7 +69,8 @@ Principais diferenças em relação à branch `main`:
 
 | Recurso | Link |
 |---|---|
-| API em produção + Swagger | https://api-gestao-dotnet.onrender.com |
+| API ADO.NET (`main`) + Swagger | https://api-gestao-dotnet-ado.onrender.com/ |
+| API EF Core (`ef`) + Swagger | https://api-gestao-dotnet-ef.onrender.com/ |
 | Vídeo: autenticação JWT e endpoints protegidos | https://youtu.be/g3xyDaQyCmI |
 
 **Credencial de demonstração** (o usuário `id = 1` não pode ser removido nem atualizado pela API):
@@ -83,7 +84,7 @@ Principais diferenças em relação à branch `main`:
 
 **Como testar em 30 segundos:**
 
-1. Abra o [Swagger](https://api-gestao-dotnet.onrender.com)
+1. Abra o Swagger da [versão ADO.NET](https://api-gestao-dotnet-ado.onrender.com/) ou da [versão EF Core](https://api-gestao-dotnet-ef.onrender.com/)
 2. Execute `POST /funcionario/login` com a credencial acima
 3. Clique em **Authorize** e cole o token retornado
 4. Explore os endpoints de clientes, produtos, estoque e dashboard
@@ -101,7 +102,7 @@ Principais diferenças em relação à branch `main`:
 - **Consultas assíncronas** com EF Core, sem `First()` síncrono e sem carregar `senha_hash` em listagens.
 - **Testes unitários** (xUnit, Moq, Bogus) e **testes de carga** (Locust).
 - **CI** com GitHub Actions e **Docker** multi-stage com usuário não-root.
-- **Deploy em produção** (Render + Supabase), configurado por variáveis de ambiente, com região escolhida a partir de medições de latência e monitoramento contínuo.
+- **Dois deploys em produção** (Render + Supabase), ADO.NET e EF Core, sobre o **mesmo banco**, configurados por variáveis de ambiente, com região escolhida a partir de medições de latência e monitoramento contínuo.
 
 ## Tecnologias
 
@@ -485,13 +486,14 @@ dotnet run --launch-profile http
 
 | Componente | Serviço |
 |---|---|
-| API (container Docker) | [Render](https://api-gestao-dotnet.onrender.com), região Virginia (EUA) |
-| Banco de dados | PostgreSQL gerenciado no [Supabase](https://supabase.com), região US East |
+| API ADO.NET (`main`) | [https://api-gestao-dotnet-ado.onrender.com](https://api-gestao-dotnet-ado.onrender.com), Render, região Virginia (EUA) |
+| API EF Core (`ef`) | [https://api-gestao-dotnet-ef.onrender.com](https://api-gestao-dotnet-ef.onrender.com), Render, região Virginia (EUA) |
+| Banco de dados (compartilhado) | PostgreSQL gerenciado no [Supabase](https://supabase.com), região US East |
 | Monitoramento | UptimeRobot |
 
-A mesma imagem usada localmente roda em produção; a diferença está apenas nas **variáveis de ambiente** (`DB_CONNECTION` apontando para o Supabase e os segredos JWT configurados no painel do Render), sem alterações de código.
+As duas versões usam a mesma imagem base e as mesmas variáveis de ambiente (`DB_CONNECTION` apontando para o Supabase e os segredos JWT configurados no painel do Render). A diferença entre elas é a camada de acesso a dados: **ADO.NET/Npgsql** na `main` e **Entity Framework Core** na `ef`. Como apontam para o mesmo banco, os dados são compartilhados; alterações feitas em uma aparecem na outra.
 
-As URLs, métricas e esse fluxo de deploy descrevem a versão publicada a partir da branch `main`. A branch `ef` é a migração em andamento para EF Core e deve ser validada localmente antes de substituir a versão em produção.
+As métricas da seção [Desempenho em produção](#desempenho-em-produção) são registros históricos das medições feitas no projeto publicado, não um benchmark comparativo entre as duas versões.
 
 ## Autor
 
