@@ -1,0 +1,10 @@
+name: deploy render
+on: [pull_request,push]
+jobs:
+    deploy-Ef:
+        runs-on: ubuntu-latest
+        steps:
+            - name: verifica codigo
+              uses: actions/checkout@v3
+            - name: chamar o hook
+              run: sleep 4 && curl ${{secrets.HOOK_RENDER_EF}}

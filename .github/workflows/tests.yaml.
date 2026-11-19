@@ -1,8 +1,7 @@
-name: Entrega continua
+name: tests dotnet
 on: [pull_request,push]
- 
 jobs:
-    entrega-Ci:
+    tests:
         runs-on: ubuntu-latest
         steps:
             - name: verifica codigo

@@ -38,12 +38,15 @@ Credenciais para teste:
   "senha": "123"
 }
 """);;
-            app.MapGet("/funcionario/get",async Task<IResult> (IServiceFuncionario service,int page=1,int limit=100) =>
-            {
-                var funcionario= await service.GetAll(limit, page);
-                return Results.Ok(funcionario) ;
-                
-            }).WithTags("Funcionario").WithSummary("Lista os funcionarios").WithDescription("Retorna uma lista de todos os funcionários cadastrados, incluindo seus IDs para operações futuras.").RequireAuthorization("Admin");
+            app.MapGet("/funcionario/get",
+                    async Task<IResult> (IServiceFuncionario service, int page = 1, int limit = 100) =>
+                    {
+                        var funcionario = await service.GetAll(limit, page);
+                        return Results.Ok(funcionario);
+
+                    }).WithTags("Funcionario").WithSummary("Lista os funcionarios")
+                .WithDescription(
+                    "Retorna uma lista de todos os funcionários cadastrados, incluindo seus IDs para operações futuras.").RequireAuthorization("Admin");
             
         
             app.MapGet("/funcionario/get/{id}",async Task<IResult>(int id,IServiceFuncionario n1) =>

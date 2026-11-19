@@ -1,7 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Api.Core.Application.utils;
-
 using Microsoft.AspNetCore.RateLimiting;
 using auth.Services;
 using Microsoft.IdentityModel.Tokens;

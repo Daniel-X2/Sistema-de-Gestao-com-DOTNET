@@ -1,6 +1,9 @@
 using Npgsql;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Dto;
 using Api.Core.Application.utils;
+using Microsoft.EntityFrameworkCore;
+using models;
 
 namespace Api.Core.Application.repository
 { 
@@ -14,7 +17,7 @@ public interface  IRepositoryClient
    internal Task<ListaClient> GetAllClient(int page, int limit);
    internal Task<ClientDto> GetById(int id);
    internal Task<int> AddClient(ClientDto campos);
-   internal Task<bool> ExistsAccount(int conta);
+   internal Task<bool> ExistsAccount(int Conta);
    internal Task<bool> ExistsCpf(string cpf);
    internal Task<int> UpdateClient(ClientDto campos, int id);
    internal Task<int> DeleteClient(int id);
@@ -24,7 +27,7 @@ public interface  IRepositoryClient
 /// <summary>
 /// Repositório para manipulação de dados da tabela 'cliente' no PostgreSQL.
 /// </summary>
-internal class RepositoryClient(IConnect host):IRepositoryClient
+internal class RepositoryClient(ConnectHost host):IRepositoryClient
 {
     /// <summary>
     /// Consulta todos os clientes na tabela 'cliente'.
@@ -34,33 +37,31 @@ internal class RepositoryClient(IConnect host):IRepositoryClient
     /// <returns>Lista de clientes (ListaClient).</returns>
     public async Task<ListaClient>  GetAllClient(int page,int limit)
     {
+        var context = host;
+        var take = limit > 0 ? limit : 100;
+        var skip = (page > 1 ? page - 1 : 0) * take;
+        var list=await context.cliente.OrderBy(cl => cl.id).Skip(skip).Take(take).ToListAsync();
 
-        await using NpgsqlConnection connect=host.Connect();
-        var offset = (page - 1) * limit;
-        await connect.OpenAsync();
-
-        await using var cmd = new NpgsqlCommand("SELECT * FROM cliente LIMIT @limit OFFSET @offset", connect);
-        cmd.Parameters.AddWithValue("limit", limit);
-        cmd.Parameters.AddWithValue("offset", offset);
-        
         ListaClient lista=new();
-        
-        await using var reader = await cmd.ExecuteReaderAsync();
-        while(await reader.ReadAsync())
+
+
+        foreach(var c in list)
         {
             
             ClientDto campos=new();
-            campos.Id=(int)reader["id"];
-            campos.Nome=(string)reader["nome"];
-            campos.Cpf=(string)reader["cpf"];
-            campos.Conta=(int)reader["conta"];
-            campos.Isvip=(bool)reader["isvip"];
-            campos.Data=(int)reader["data"];
-            campos.Empresa=(string)reader["empresa"];
+            campos.Id=c.id;
+            campos.Nome=c.nome;
+            campos.Cpf=c.cpf;
+            campos.Conta=c.conta;
+            campos.Isvip=c.isvip;
+            campos.Data=c.data;
+            campos.Empresa=c.empresa;
             lista.Clients.Add(campos);
         }
          
         return lista;
+        
+        
     }
     /// <summary>
     /// Busca um cliente específico pelo ID.
@@ -68,27 +69,25 @@ internal class RepositoryClient(IConnect host):IRepositoryClient
     /// <param name="id">ID único do cliente.</param>
     /// <returns>Dados do cliente ou null se não encontrado.</returns>
     public  async Task<ClientDto> GetById(int id)
-    {
-        await using NpgsqlConnection connect=host.Connect(); 
+    { 
         
-        await connect.OpenAsync();
-
-        await using var cmd = new NpgsqlCommand("SELECT * FROM cliente WHERE id = @id", connect);
-        cmd.Parameters.AddWithValue("id", id);
         
-        await using var reader = await cmd.ExecuteReaderAsync();
-        if (!await reader.ReadAsync()) { return null;}
+        var context = host;
+        var resultado=await context.cliente.Where(cl => cl.id == id).FirstOrDefaultAsync();
+            if (resultado is null)
+            {
+                return null;
+            }
         
         ClientDto campos=new();
-        campos.Id=(int)reader["id"];
-        campos.Nome=(string)reader["nome"];
-        campos.Cpf=(string)reader["cpf"];
-        campos.Conta=(int)reader["conta"];
-        campos.Isvip=(bool)reader["isvip"];
-        campos.Data=(int)reader["data"];
-        campos.Empresa=(string)reader["empresa"];
-        
-         
+        campos.Id=resultado.id;
+        campos.Nome=resultado.nome;
+        campos.Cpf=resultado.cpf;
+        campos.Conta=resultado.conta;
+        campos.Isvip=resultado.isvip;
+        campos.Data=resultado.data;
+        campos.Empresa=resultado.empresa;
+
         return campos;
     }
     /// <summary>
@@ -98,40 +97,22 @@ internal class RepositoryClient(IConnect host):IRepositoryClient
     /// <returns>Número de linhas afetadas.</returns>
     public async Task<int> AddClient(ClientDto campos)
     {
-        int resultado;
         
-        await using NpgsqlConnection connect = host.Connect();
-        
-        await connect.OpenAsync();
-
-        await using (var cmd = new NpgsqlCommand("INSERT INTO cliente (nome ,cpf, conta,isvip,data,empresa) VALUES (@nome, @cpf, @conta,@isvip,@data,@empresa)", connect))
-        {
-            cmd.Parameters.AddWithValue("nome", campos.Nome);
-            cmd.Parameters.AddWithValue("cpf", campos.Cpf);
-            cmd.Parameters.AddWithValue("conta", campos.Conta);
-            cmd.Parameters.AddWithValue("isvip", campos.Isvip);
-            cmd.Parameters.AddWithValue("data", campos.Data);
-            cmd.Parameters.AddWithValue("empresa", campos.Empresa);
-            resultado=await cmd.ExecuteNonQueryAsync();
-        }
+        var context = host;
+        await context.cliente.AddAsync(new cliente( ){nome=campos.Nome,cpf = campos.Cpf,conta = campos.Conta,empresa = campos.Empresa,isvip = campos.Isvip});
+        int resultado=await context.SaveChangesAsync();
         
         return resultado;
     }  
     /// <summary>
     /// Verifica se uma conta já existe no banco.
     /// </summary>
-    /// <param name="conta">Número da conta.</param>
+    /// <param name="Conta">Número da conta.</param>
     /// <returns>True se existir.</returns>
-    public async Task<bool> ExistsAccount(int conta)
+    public async Task<bool> ExistsAccount(int Conta)
     {
-        await using NpgsqlConnection connect=host.Connect();
-        await connect.OpenAsync();
-        string sql="SELECT EXISTS (SELECT 1 FROM cliente WHERE conta=@conta)";
-        await using var cmd=new NpgsqlCommand(sql,connect);
-        cmd.Parameters.AddWithValue("conta",conta);
-       bool resultado=(bool) await cmd.ExecuteScalarAsync();
-       return resultado;
-       
+        var context = host;
+        return await context.cliente.AnyAsync(cliente => cliente.conta == Conta);
     }
     /// <summary>
     /// Verifica se um CPF já está cadastrado para algum cliente.
@@ -140,25 +121,16 @@ internal class RepositoryClient(IConnect host):IRepositoryClient
     /// <returns>True se existir.</returns>
     public async Task<bool> ExistsCpf(string cpf)
     {
-        await using NpgsqlConnection connect =host.Connect();
-        await connect.OpenAsync();
-        string sql ="SELECT EXISTS (SELECT 1 FROM cliente WHERE cpf=@cpf)";
-        await using var cmd=new NpgsqlCommand(sql,connect);
-        cmd.Parameters.AddWithValue("cpf",cpf);
-        bool resultado=(bool) await cmd.ExecuteScalarAsync();
-        return resultado;
+        var context = host;
+        return await context.cliente.AnyAsync(cliente => cliente.cpf == cpf);
     }
 
     public async Task<Int64> QuantidadeClient()
     {
-        await using NpgsqlConnection connect=host.Connect(); 
         
-        await connect.OpenAsync();
-
-        await using var cmd = new NpgsqlCommand("SELECT COUNT(*) FROM cliente", connect);
-        var result =(Int64)  await cmd.ExecuteScalarAsync();
-        
-        return result;
+        var context = host;
+        var resultado = await context.cliente.CountAsync();
+        return resultado;
     }
     /// <summary>
     /// Atualiza os dados de um cliente pelo ID.
@@ -168,27 +140,15 @@ internal class RepositoryClient(IConnect host):IRepositoryClient
     /// <returns>Número de linhas afetadas.</returns>
     public  async Task<int> UpdateClient(ClientDto campos,int id)
     {
+        var context = host;
+       var resultado= await  context.cliente.Where(cl=>cl.id==id).ExecuteUpdateAsync(setter=>setter.SetProperty(cl=>cl.nome,campos.Nome)
+        .SetProperty(cl=>cl.cpf,campos.Cpf)
+        .SetProperty(cl=>cl.conta,campos.Conta).
+        SetProperty(cl=>cl.empresa , campos.Empresa)
+        .SetProperty(cl=>cl.isvip, campos.Isvip));
+        // resultado= await context.SaveChangesAsync();
         
-        await using NpgsqlConnection connect=host.Connect();
-
-        await connect.OpenAsync();
-        int resultado;
-        
-        
-       await using var cmd = new NpgsqlCommand("UPDATE  cliente set nome=@nome,cpf=@cpf,conta=@conta,isvip=@isvip,data=@data,empresa=@empresa  WHERE id = @id", connect);
-      
-       cmd.Parameters.AddWithValue("conta",campos.Conta);
-       cmd.Parameters.AddWithValue("isvip",campos.Isvip);
-       cmd.Parameters.AddWithValue("nome", campos.Nome);
-       cmd.Parameters.AddWithValue("cpf", campos.Cpf);
-       cmd.Parameters.AddWithValue("data", campos.Data);
-       cmd.Parameters.AddWithValue("empresa", campos.Empresa);
-       cmd.Parameters.AddWithValue("id", id);
-       
-        
-         resultado=await cmd.ExecuteNonQueryAsync();   
-        
-         return  resultado;
+        return  resultado;
     }
     /// <summary>
     /// Exclui um cliente pelo ID.
@@ -197,22 +157,11 @@ internal class RepositoryClient(IConnect host):IRepositoryClient
     /// <returns>Número de linhas afetadas.</returns>
     public  async Task<int> DeleteClient(int id)
     {
-        int resultado;
-        
-        await using NpgsqlConnection connect=host.Connect();
-        
-        await connect.OpenAsync();
+        var context = host;
+        int resultado= await context.cliente.Where(cl=>cl.id==id).ExecuteDeleteAsync();
         //revisar e colocar pra pegar por id
-       await using (var  cmd = new NpgsqlCommand("DELETE FROM cliente WHERE id=@id ", connect))
-        {
-            cmd.Parameters.AddWithValue("id",id);
-            resultado=await cmd.ExecuteNonQueryAsync();
-        }
         
-       
         return resultado ;
-        
-        
     }
     /// <summary>
     /// Obtém o ID de um cliente através do seu CPF.
@@ -221,21 +170,10 @@ internal class RepositoryClient(IConnect host):IRepositoryClient
     /// <returns>ID do cliente ou 0 se não encontrado.</returns>
     public  async Task<int> GetIdByCpf(string cpf)
     {
-        await using NpgsqlConnection connect=host.Connect(); 
-        
-        await connect.OpenAsync();
-
-        await using var cmd = new NpgsqlCommand("SELECT id FROM cliente WHERE cpf=@cpf ", connect);
-        cmd.Parameters.AddWithValue("cpf", cpf);
-        
-        await using var reader = await cmd.ExecuteReaderAsync();
-        if (!await reader.ReadAsync()) { return 0;}
-
-
-
-
-        
-        return (int) reader["id"];
+        var context = host;
+        var resultado=await context.cliente.Where(cl => cl.cpf == cpf).Select(cl => cl.id).FirstOrDefaultAsync();
+    
+        return resultado;
     }
     
 }

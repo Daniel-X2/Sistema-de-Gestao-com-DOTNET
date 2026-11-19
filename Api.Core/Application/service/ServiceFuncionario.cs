@@ -44,7 +44,7 @@ namespace Api.Core.Application.service
         /// <returns>Dados para login (hash da senha e status de admin).</returns>
         public async Task<FuncionarioLoginDto> Admin(string cpf)
         {
-            Validation valid = new Validation();
+           Validation valid = new Validation();
             FuncionarioLoginDto funcionario=await  repo.GetAdmin(valid.IsValidDigit(cpf));
             if (funcionario==null)
             {
