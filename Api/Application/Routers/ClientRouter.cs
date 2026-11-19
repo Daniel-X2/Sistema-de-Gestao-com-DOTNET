@@ -25,7 +25,7 @@ public class  ClientRouter
 
                 return Results.Ok(lista);
             }).WithTags("Client").WithSummary("Listar todos os clientes")
-            .WithDescription("Retorna uma lista contendo todos os clientes cadastrados no sistema.");//.RequireAuthorization();
+            .WithDescription("Retorna uma lista contendo todos os clientes cadastrados no sistema.").RequireAuthorization();
         app.MapGet("/client/quantidade", async Task<IResult> (IServiceClient service) =>
             {
 
@@ -33,7 +33,7 @@ public class  ClientRouter
 
                 return Results.Ok(lista);
             }).WithTags("Client").WithSummary("Listar todos os clientes")
-            .WithDescription("Retorna uma lista contendo todos os clientes cadastrados no sistema.");//.RequireAuthorization();
+            .WithDescription("Retorna uma lista contendo todos os clientes cadastrados no sistema.").RequireAuthorization();
         app.MapDelete("/client/delete/{id}", async  Task<IResult> (int id,IServiceClient service) =>
         {
           bool resultado= await service.DeleteService(id);
@@ -45,7 +45,7 @@ public class  ClientRouter
           return Results.BadRequest(new {erro="erro ao tentar deletar"});
           
           
-        }).WithTags("Client").WithSummary("Excluir cliente por ID").WithDescription("Remove um cliente do sistema permanentemente com base no ID fornecido. Retorna sucesso ou erro na operação.");//.RequireAuthorization();
+        }).WithTags("Client").WithSummary("Excluir cliente por ID").WithDescription("Remove um cliente do sistema permanentemente com base no ID fornecido. Retorna sucesso ou erro na operação.").RequireAuthorization();
 
         app.MapPost("/client/add/", async Task<IResult> (ClientDto campos,IServiceClient service) =>
         {
@@ -58,7 +58,7 @@ public class  ClientRouter
         }
         return Results.BadRequest(new {erro="erro ao tentar adicionar"});
       
-        }).WithTags("Client").WithSummary("Adiciona clientes").WithDescription("Cria um novo registro de cliente com os dados fornecidos. Retorna uma mensagem de confirmação ou erro.");//.RequireAuthorization();
+        }).WithTags("Client").WithSummary("Adiciona clientes").WithDescription("Cria um novo registro de cliente com os dados fornecidos. Retorna uma mensagem de confirmação ou erro.").RequireAuthorization();
 
         app.MapPut("/client/update/{id}/", async Task<IResult> (int id, ClientDto campos, IServiceClient service) =>
         {
@@ -71,6 +71,6 @@ public class  ClientRouter
           }
           return Results.Ok(new {resultado="teve atualizaçoes parciais",camposNotUpdate=$"campos nao atualizados {resultado}"});
           
-        }).WithTags("Client").WithSummary("Atualiza o Client").WithDescription("Atualiza as informações de um cliente existente.");//.RequireAuthorization();
+        }).WithTags("Client").WithSummary("Atualiza o Client").WithDescription("Atualiza as informações de um cliente existente.").RequireAuthorization();
     }
 }

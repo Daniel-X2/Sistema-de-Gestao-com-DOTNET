@@ -3,10 +3,11 @@
 # Sistema de Gestão com .NET
 
 **API REST assíncrona para gestão de clientes, funcionários e estoque**
-Autenticação JWT · RBAC · PostgreSQL · Docker · Deploy em produção
+Autenticação JWT · RBAC · Entity Framework Core · PostgreSQL · Docker · Deploy em produção
 
 [![CI](https://github.com/Daniel-X2/Sistema-de-Gestao-com-DOTNET/actions/workflows/desenvolvimento.yaml/badge.svg)](https://github.com/Daniel-X2/Sistema-de-Gestao-com-DOTNET/actions/workflows/desenvolvimento.yaml)
 ![.NET](https://img.shields.io/badge/.NET-ASP.NET_Core-512BD4?logo=dotnet&logoColor=white)
+![EF Core](https://img.shields.io/badge/ORM-EF_Core-512BD4?logo=dotnet&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
 ![JWT](https://img.shields.io/badge/Auth-JWT-000000?logo=jsonwebtokens&logoColor=white)
@@ -16,6 +17,8 @@ Autenticação JWT · RBAC · PostgreSQL · Docker · Deploy em produção
 
 [**API em produção (Swagger)**](https://api-gestao-dotnet.onrender.com) · [**Vídeo de demonstração**](https://youtu.be/g3xyDaQyCmI)
 
+> **Branch `ef`:** esta é a versão em migração para **Entity Framework Core**. As seções de deploy, desempenho e monitoramento abaixo descrevem o projeto publicado (branch `main`); as diferenças desta branch estão destacadas ao longo do documento.
+
 </div>
 
 ---
@@ -23,6 +26,7 @@ Autenticação JWT · RBAC · PostgreSQL · Docker · Deploy em produção
 ## Sumário
 
 - [Visão geral](#visão-geral)
+- [Estado da branch `ef`](#estado-da-branch-ef)
 - [Demonstração](#demonstração)
 - [Destaques técnicos](#destaques-técnicos)
 - [Tecnologias](#tecnologias)
@@ -43,9 +47,23 @@ Autenticação JWT · RBAC · PostgreSQL · Docker · Deploy em produção
 
 ## Visão geral
 
-API REST construída com **ASP.NET Core (Minimal APIs)** para gerenciar **clientes**, **funcionários** e **produtos/estoque**, com painel de estatísticas para dashboard. O projeto prioriza **separação de responsabilidades**, **segurança** e **observabilidade**, e está rodando em produção no **Render** com banco **PostgreSQL hospedado no Supabase**.
+API REST construída com **ASP.NET Core (Minimal APIs)** para gerenciar **clientes**, **funcionários** e **produtos/estoque**, com painel de estatísticas para dashboard. O projeto prioriza **separação de responsabilidades**, **segurança** e **observabilidade**, e o projeto publicado (branch `main`) roda no **Render** com banco **PostgreSQL hospedado no Supabase**.
 
 A documentação interativa (**Swagger**) fica na raiz da URL: basta fazer login com a credencial de demonstração, copiar o token e testar os endpoints protegidos direto pelo navegador.
+
+Nesta branch, o acesso a dados foi migrado de ADO.NET puro para **Entity Framework Core 10** com o provider **Npgsql**. A aplicação continua com a mesma arquitetura em camadas, DTOs, JWT, BCrypt e Serilog.
+
+## Estado da branch `ef`
+
+Principais diferenças em relação à branch `main`:
+
+- **EF Core em todos os repositórios**: `ConnectHost` é um `DbContext` registrado com `AddDbContextPool` e `UseNpgsql`; consultas usam LINQ (`AnyAsync`, `FirstOrDefaultAsync`, `Skip/Take`, `ExecuteUpdateAsync`, `ExecuteDeleteAsync`).
+- **Connection string via ambiente**: `DB_CONNECTION` é lido de `.env` — não há segredo de banco no código.
+- **Autenticação ativa**: `UseAuthentication()` e `UseAuthorization()` estão habilitados, e os serviços de produto/dashboard estão registrados na DI.
+- **Paginação efetiva nas listagens** de clientes, funcionários, produtos e estoque (`ORDER BY id LIMIT ... OFFSET ...`), com `page`/`limit` válidos por padrão.
+- **`codigo` persistido no cadastro de produto**; verificação de duplicidade usa `AnyAsync`/`Count`.
+- **`senha_hash` não é carregada nas listagens de funcionários**: consultas projetam apenas as colunas necessárias. O hash é lido somente no login e gravado no cadastro.
+- **Autorização aplicada**: todas as rotas exceto o login exigem JWT; a listagem de funcionários exige a policy `Admin` (ver [Endpoints](#endpoints)).
 
 ## Demonstração
 
@@ -54,7 +72,7 @@ A documentação interativa (**Swagger**) fica na raiz da URL: basta fazer login
 | API em produção + Swagger | https://api-gestao-dotnet.onrender.com |
 | Vídeo: autenticação JWT e endpoints protegidos | https://youtu.be/g3xyDaQyCmI |
 
-**Credencial de demonstração** (protegida: não pode ser removida nem alterada pela API):
+**Credencial de demonstração** (o usuário `id = 1` não pode ser removido nem atualizado pela API):
 
 ```json
 {
@@ -74,12 +92,13 @@ A documentação interativa (**Swagger**) fica na raiz da URL: basta fazer login
 
 - **Arquitetura em camadas**: rotas → serviços → repositórios, com DTOs e exceções de domínio.
 - **Autenticação JWT** com **RBAC** (roles `Admin` e `User`) e senhas com **BCrypt**.
-- **Rate limiting** por IP para proteger contra abuso.
+- **Rate limiting** configurado (5 requisições/minuto); nesta branch o limiter ainda não foi aplicado às rotas com `RequireRateLimiting`.
 - **Middleware global de exceções**: respostas JSON padronizadas e status HTTP coerentes.
 - **Logs estruturados** com Serilog (console + arquivo com rotação diária).
 - **Validações de domínio**: CPF (algoritmo próprio), nome, conta, código, lote, quantidade e ano de nascimento.
 - **Atualização parcial**: campos inválidos mantêm o valor anterior e são devolvidos na resposta.
-- **Paginação** em todas as listagens.
+- **Paginação** com `Skip/Take` nas listagens de clientes, funcionários, produtos e estoque.
+- **Consultas assíncronas** com EF Core, sem `First()` síncrono e sem carregar `senha_hash` em listagens.
 - **Testes unitários** (xUnit, Moq, Bogus) e **testes de carga** (Locust).
 - **CI** com GitHub Actions e **Docker** multi-stage com usuário não-root.
 - **Deploy em produção** (Render + Supabase), configurado por variáveis de ambiente, com região escolhida a partir de medições de latência e monitoramento contínuo.
@@ -90,7 +109,7 @@ A documentação interativa (**Swagger**) fica na raiz da URL: basta fazer login
 |---|---|
 | Plataforma | .NET / ASP.NET Core (Minimal APIs) |
 | Banco de dados | PostgreSQL (Supabase em produção) |
-| Acesso a dados | ADO.NET com Npgsql |
+| Acesso a dados | Entity Framework Core 10 com provider Npgsql 10 (LINQ + consultas assíncronas) |
 | Autenticação | JWT Bearer + RBAC (Admin/User) |
 | Segurança | BCrypt, Rate Limiting |
 | Logs | Serilog (console + arquivo rotativo diário) |
@@ -102,12 +121,15 @@ A documentação interativa (**Swagger**) fica na raiz da URL: basta fazer login
 | Padrões | Injeção de Dependência, Repository, Service Layer, Middleware |
 
 
+## Arquitetura
+
 Cada camada tem uma responsabilidade clara:
 
 - **Routers**: definem endpoints, autorização e contrato HTTP.
 - **Services**: concentram regras de negócio e validações.
-- **Repositories**: isolam as queries SQL e o acesso ao banco.
+- **Repositories**: isolam o acesso a dados. Nesta branch, usam LINQ sobre o `DbContext` (`ConnectHost`) em vez de SQL escrito à mão; comandos de bulk usam `ExecuteUpdateAsync`/`ExecuteDeleteAsync`.
 - **Middleware**: captura exceções de qualquer camada e as converte em respostas padronizadas.
+- **Infraestrutura**: `AddScope` registra o DbContext com `AddDbContextPool` e injeta repositórios/serviços; `Load.EnvConnection()` lê `DB_CONNECTION` do ambiente.
 
 ## Estrutura do projeto
 
@@ -125,17 +147,14 @@ Cada camada tem uma responsabilidade clara:
 ├── Api.Core/                   # Lógica de negócio e acesso a dados
 │   └── Application/
 │       ├── dto/                # DTOs (Client, Funcionario, Produto, Dashboard)
-│       ├── repository/         # Repositórios com queries SQL
+│       ├── repository/         # Repositórios com LINQ/EF Core (sem SQL escrito à mão)
 │       ├── service/            # Regras de negócio e validações
-│       ├── utils/              # Conexão, DI (AddScope), Validation
+│       ├── utils/              # DbContext (Conexao.cs), DI (AddScope), Validation
 │       └── CustomException/    # Exceções personalizadas
 │
 ├── Api.Test/                   # Testes unitários
 │   ├── dados.cs                # Geração de dados com Bogus
-│   ├── TestServiceClient.cs
-│   ├── TestServiceFuncionario.cs
-│   ├── TestServiceProduct.cs
-│   └── TestUtils.cs
+│   └── Test/                   # Testes de serviço (Client, Funcionario, Product, Utils)
 │
 ├── Compose/                    # Docker Compose geral (API + PostgreSQL)
 │   ├── docker-compose.yml
@@ -189,8 +208,8 @@ O script `Compose/sql.sql` cria as tabelas e insere dois registros iniciais: o f
 - Login via **CPF + senha** com geração de token **JWT**.
 - Roles `Admin` (acesso total, incluindo listagem de funcionários) e `User` (acesso restrito).
 - Senhas armazenadas com **BCrypt**.
-- **Rate limiting**: máximo de 5 requisições por minuto por IP.
-- **Credencial padrão protegida**: o usuário de demonstração (`id = 1`) não pode ser excluído nem atualizado.
+- **Rate limiting**: limiter de 5 requisições por minuto configurado (ainda sem aplicação nas rotas nesta branch).
+- **Credencial padrão protegida**: o usuário de demonstração (`id = 1`) não pode ser excluído pela API.
 
 ### Clientes
 - Cadastro com validação de CPF, conta e nome.
@@ -202,7 +221,7 @@ O script `Compose/sql.sql` cria as tabelas e insere dois registros iniciais: o f
 - Cadastro com validação de CPF, nome e ano de nascimento (18–85 anos).
 - Senha convertida em hash BCrypt antes de ser persistida.
 - Controle de atestados e privilégios administrativos.
-- CRUD completo; listagem restrita a `Admin`.
+- CRUD completo; listagem restrita à policy `Admin`.
 
 ### Produtos e estoque
 - Cadastro com validação de código, lote, quantidade e valor de revenda.
@@ -215,7 +234,9 @@ O script `Compose/sql.sql` cria as tabelas e insere dois registros iniciais: o f
 
 ## Endpoints
 
-Todos os endpoints, exceto o login, exigem token JWT no header `Authorization: Bearer <token>`.
+Todos os endpoints, exceto o login, exigem o header `Authorization: Bearer <token>`. A listagem de funcionários (`GET /funcionario/get`) exige uma token com role `Admin`; as demais rotas aceitam `Admin` ou `User`.
+
+Para gerar o token: `POST /funcionario/login` com a credencial de demonstração, depois **Authorize** no Swagger.
 
 ### Autenticação
 
@@ -240,8 +261,8 @@ Todos os endpoints, exceto o login, exigem token JWT no header `Authorization: B
 | GET | `/funcionario/get` | **Admin** | Lista funcionários (paginado) |
 | GET | `/funcionario/get/{id}` | Autenticado | Busca funcionário por ID |
 | POST | `/funcionario/add/` | Autenticado | Adiciona um funcionário |
-| PUT | `/funcionario/update/{id}/` | Autenticado | Atualiza um funcionário |
-| DELETE | `/funcionario/delete/{id}` | Autenticado | Remove um funcionário |
+| PUT | `/funcionario/update/{id}/` | Autenticado | Atualiza um funcionário (`id = 1` bloqueado) |
+| DELETE | `/funcionario/delete/{id}` | Autenticado | Remove um funcionário (`id = 1` bloqueado) |
 
 ### Produtos e estoque
 
@@ -271,6 +292,8 @@ GET /funcionario/get?page=1&limit=10
 GET /product/get?page=1&limit=10
 GET /estoque/get?page=1&limit=10
 ```
+
+Nesta branch a paginação é aplicada no banco via `OrderBy(id).Skip(skip).Take(take)`. Valores inválidos são normalizados (`page < 1` vira página 1; `limit <= 0` usa 100). Uma página além do último registro retorna `400` com `{"erro":"nao teve correspondecia aos dados solicitados"}`. `/estoque/valorBruto` não é paginado — devolve o valor de todos os produtos.
 
 ## Tratamento de erros
 
@@ -302,6 +325,8 @@ Exemplo de resposta:
 }
 ```
 
+Na prática, nesta branch o login com **senha incorreta** responde `400` com `"Senha incorreta"` (a rota usa `Results.BadRequest`), embora a exceção `InvalidPassword` esteja mapeada para `401` no middleware. CPF inexistente no login responde `422`.
+
 ## Logs
 
 Gerados automaticamente via **Serilog** em dois destinos:
@@ -324,6 +349,8 @@ Cobrem a camada de serviço com mocks dos repositórios, sem necessidade de banc
 ```bash
 dotnet test
 ```
+
+Na branch `ef`, os repositórios em EF Core não têm testes unitários dedicados; a validação das consultas foi feita manualmente contra a API local, incluindo a inspeção do SQL gerado (`EXISTS`, `LIMIT 1` e `LIMIT/OFFSET`).
 
 ### Testes de carga
 
@@ -397,11 +424,11 @@ Com a API na mesma costa do banco, o tempo de resposta caiu de forma consistente
 
 ### 1. Variáveis de ambiente
 
-Crie um arquivo `.env` com as variáveis abaixo:
+Cada modo de execução lê um `.env` diferente. `DotNetEnv` carrega o arquivo do **diretório atual**, e `Load.EnvConnection()` exige `DB_CONNECTION` — sem ela, a API falha ao iniciar.
 
 ```env
-DB_CONNECTION=Host=postgres_db;Database=postgres;Username=postgres;Password=senha
-POSTGRES_PASSWORD=senha
+DB_CONNECTION=Host=<host>;Port=<porta>;Database=postgres;Username=postgres;Password=<senha>;SSL Mode=Disable
+POSTGRES_PASSWORD=<senha>
 JWT_KEY=sua_chave_secreta
 JWT_ISSUER=MinhaApi
 JWT_AUDIENCE=MeuClient
@@ -409,41 +436,50 @@ JWT_AUDIENCE=MeuClient
 
 | Variável | Descrição |
 |---|---|
-| `DB_CONNECTION` | String de conexão com o PostgreSQL |
+| `DB_CONNECTION` | String de conexão lida pela API; o host/porta dependem do modo (ver abaixo) |
 | `POSTGRES_PASSWORD` | Senha do PostgreSQL (usada pelo container do banco) |
 | `JWT_KEY` | Chave secreta para assinar os tokens |
 | `JWT_ISSUER` | Emissor do token |
 | `JWT_AUDIENCE` | Audiência do token |
 
-### 2. Docker Compose completo (recomendado)
+> Use `SSL Mode=Disable` com o PostgreSQL local — o container não oferece SSL. Também mantenha `Password` igual a `POSTGRES_PASSWORD`.
 
-A pasta `Compose/` sobe **API + PostgreSQL** juntos. Crie o `.env` dentro dela e execute:
+### 2. Docker Compose completo (API + PostgreSQL)
+
+A pasta `Compose/` sobe **API + PostgreSQL** juntos. **Antes de subir**, ajuste `Compose/.env`: o arquivo versionado aponta para o Supabase, então troque `DB_CONNECTION` pelo host interno do Compose:
+
+```env
+DB_CONNECTION=Host=postgres_db;Port=5432;Database=postgres;Username=postgres;Password=<senha>;SSL Mode=Disable
+```
 
 ```bash
 cd Compose
-docker-compose up -d
+docker compose up -d
 ```
 
 - API disponível em `http://localhost:5153` (Swagger na raiz)
-- PostgreSQL exposto na porta `5433` do host
-- O banco é inicializado automaticamente com as tabelas e o funcionário administrador padrão
+- PostgreSQL exposto na porta `5433` do host (`5433:5432`)
+- O banco é inicializado com `Compose/sql.sql`: tabelas, funcionário administrador e cliente de exemplo
+- O host `postgres_db` **só existe dentro da rede do Compose**; do host, use `localhost:5433`
 
 ### 3. Execução local (API via `dotnet run` + banco em container)
 
-A pasta `Teste Local/` contém um compose **apenas com o banco de dados**, ideal para desenvolver e depurar a API localmente.
+A pasta `Teste Local/` contém um compose **apenas com o banco**, ideal para depurar a API.
 
 ```bash
-# 1) Suba somente o PostgreSQL
+# 1) Suba somente o PostgreSQL (porta 5433 no host)
 cd "Teste Local"
-docker-compose up -d
+docker compose up -d
 
-# 2) Em outro terminal, crie o .env dentro de Api/ apontando DB_CONNECTION
-# para o host/porta do banco (ex.: Host=localhost;Port=<porta do compose>;...)
+# 2) No diretório Api/, configure Api/.env apontando para o host:
+#    DB_CONNECTION=Host=localhost;Port=5433;Database=postgres;Username=postgres;Password=<senha>;SSL Mode=Disable
 cd ../Api
-dotnet run
+dotnet run --launch-profile http
 ```
 
-> No modo local, use `Host=localhost` (e a porta exposta pelo compose) em `DB_CONNECTION`. O host `postgres_db` só existe dentro da rede do Docker Compose.
+- A API escuta em `http://localhost:5153` (Swagger na raiz)
+- Execute `dotnet run` **dentro de `Api/`**: é lá que `Env.Load()` procura o `.env`
+- Se a API iniciar mas as consultas falharem, confira se a connection string usa `localhost:5433` (host) e não `postgres_db:5432` (rede interna do Compose)
 
 ## Deploy
 
@@ -454,6 +490,8 @@ dotnet run
 | Monitoramento | UptimeRobot |
 
 A mesma imagem usada localmente roda em produção; a diferença está apenas nas **variáveis de ambiente** (`DB_CONNECTION` apontando para o Supabase e os segredos JWT configurados no painel do Render), sem alterações de código.
+
+As URLs, métricas e esse fluxo de deploy descrevem a versão publicada a partir da branch `main`. A branch `ef` é a migração em andamento para EF Core e deve ser validada localmente antes de substituir a versão em produção.
 
 ## Autor
 

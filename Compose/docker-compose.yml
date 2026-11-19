@@ -3,7 +3,7 @@ services:
     build: 
       context: ..
       dockerfile: Dockerfile
-    image: danizura/api-gestao-dotnet
+    image: danizura/api-gestao-dotnet:EF
     container_name: api-gestao-dotnet
     environment:
       - ASPNETCORE_HTTP_PORTS=5153
