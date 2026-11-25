@@ -17,21 +17,23 @@ public class  ClientRouter
     /// <param name="app">Instância do WebApplication para mapear as rotas.</param>
     public  async  Task Routers(WebApplication app)
     {
-        
-        app.MapGet("/client/get/", async Task<IResult> (IServiceClient service,int page=1,int limit=100) =>
-        {
-           
-            ListaClient lista=  await service.GetAllService(page, limit);
-            
-            return Results.Ok(lista) ;
-        }).WithTags("Client").WithSummary("Listar todos os clientes").WithDescription("Retorna uma lista contendo todos os clientes cadastrados no sistema.").RequireAuthorization();
+
+        app.MapGet("/client/get/", async Task<IResult> (IServiceClient service, int page = 1, int limit = 100) =>
+            {
+
+                ListaClient lista = await service.GetAllService(page, limit);
+
+                return Results.Ok(lista);
+            }).WithTags("Client").WithSummary("Listar todos os clientes")
+            .WithDescription("Retorna uma lista contendo todos os clientes cadastrados no sistema.").RequireAuthorization();
         app.MapGet("/client/quantidade", async Task<IResult> (IServiceClient service) =>
-        {
-           
-            var lista=  await service.QuantidadeClient();
-            
-            return Results.Ok(lista) ;
-        }).WithTags("Client").WithSummary("Listar todos os clientes").WithDescription("Retorna uma lista contendo todos os clientes cadastrados no sistema.").RequireAuthorization();
+            {
+
+                var lista = await service.QuantidadeClient();
+
+                return Results.Ok(lista);
+            }).WithTags("Client").WithSummary("Listar todos os clientes")
+            .WithDescription("Retorna uma lista contendo todos os clientes cadastrados no sistema.").RequireAuthorization();
         app.MapDelete("/client/delete/{id}", async  Task<IResult> (int id,IServiceClient service) =>
         {
           bool resultado= await service.DeleteService(id);

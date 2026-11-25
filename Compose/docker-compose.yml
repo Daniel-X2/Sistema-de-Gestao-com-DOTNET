@@ -3,7 +3,7 @@ services:
     build: 
       context: ..
       dockerfile: Dockerfile
-    image: danizura/api-gestao-dotnet
+    image: danizura/api-gestao-dotnet:EF
     container_name: api-gestao-dotnet
     environment:
       - ASPNETCORE_HTTP_PORTS=5153
@@ -18,9 +18,7 @@ services:
     container_name: postgres_db
     image: danizura/postgres_a
     env_file:
-     -  .env
-    
-    
+     -  .env  
     volumes:
       - ./sql.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres_data:/var/lib/postgresql/18/docker

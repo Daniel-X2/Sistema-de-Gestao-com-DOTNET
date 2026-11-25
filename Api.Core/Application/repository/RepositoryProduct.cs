@@ -2,6 +2,8 @@
 using Npgsql;
 using Dto;
 using Api.Core.Application.utils;
+using Microsoft.EntityFrameworkCore;
+using models;
 
 namespace Api.Core.Application.repository
 {
@@ -24,7 +26,7 @@ namespace Api.Core.Application.repository
 /// <summary>
 /// Repositório para manipulação de produtos e estoque no banco de dados.
 /// </summary>
-class RepositoryProduct(IConnect host):IRepositoryProduct
+class RepositoryProduct(ConnectHost host):IRepositoryProduct
 {
     /// <summary>
     /// Busca um produto pelo ID.
@@ -33,25 +35,19 @@ class RepositoryProduct(IConnect host):IRepositoryProduct
     /// <returns>DTO do produto ou null.</returns>
     public  async Task<ProdutoDto> GetProductById(int id)
     {
-        await using NpgsqlConnection connect=host.Connect(); 
-
-        await connect.OpenAsync();
-
-        await using var cmd = new NpgsqlCommand("SELECT * FROM produto WHERE id = @id", connect);
-        cmd.Parameters.AddWithValue("id", id);
-
-        await using var reader = await cmd.ExecuteReaderAsync();
-        if (!await reader.ReadAsync()) { return null;}
-
+        var context = host;
+        var resultado= await context.produto.Where(pr => pr.id == id).FirstOrDefaultAsync();
+        if (resultado is null)
+        {
+            return null;
+        }
         ProdutoDto campos=new();
-        campos.Id=(int)reader["id"];
-        campos.Nome=(string)reader["nome"];
-        campos.Codigo=(int)reader["codigo"];
-        campos.Lote=(int)reader["lote"];
-        campos.Quantidade=(int)reader["quantidade"];
-        campos.ValorRevenda = (decimal)reader["valor_revenda"];
-
-
+        campos.Id=resultado.id;
+        campos.Nome=resultado.nome;
+        campos.Codigo=resultado.codigo;
+        campos.Lote=resultado.lote;
+        campos.Quantidade=resultado.quantidade;
+        campos.ValorRevenda = resultado.valor_revenda;
         return campos;
     }
 
@@ -62,13 +58,15 @@ class RepositoryProduct(IConnect host):IRepositoryProduct
     /// <returns>True se existir.</returns>
     public async Task<bool> IsExistLote(int lote)
     {
-        await using NpgsqlConnection connect = host.Connect();
-        await connect.OpenAsync();
-
-        await using var cmd = new NpgsqlCommand("SELECT EXISTS (SELECT 1 FROM produto WHERE lote=@lote)",connect);
-        cmd.Parameters.AddWithValue("lote", lote); 
-        bool resultado=(bool) await cmd.ExecuteScalarAsync();
-        return resultado;
+        var context = host;
+        var resultado =await context.produto.Where(pr=> pr.lote==lote).CountAsync();
+        //talvez seja mais economico
+        //var resultado= context.cliente.Single(cliente => cliente.cpf == cpf);
+        if (resultado >0)
+        {
+            return true;
+        }
+        return false;
     }
     /// <summary>
     /// Verifica se um código de produto já está em uso.
@@ -77,13 +75,16 @@ class RepositoryProduct(IConnect host):IRepositoryProduct
     /// <returns>True se existir.</returns>
     public async Task<bool> IsExistCode(int codigo)
     {
-       await using NpgsqlConnection connect = host.Connect();
-       await connect.OpenAsync();
-
-       await using var cmd = new NpgsqlCommand("SELECT EXISTS (SELECT 1 FROM produto WHERE codigo=@codigo)",connect);
-       cmd.Parameters.AddWithValue("codigo", codigo); 
-       bool resultado=(bool) await cmd.ExecuteScalarAsync();
-       return resultado;
+        
+        var context = host;
+        var resultado = context.produto.Where(pr=> pr.codigo==codigo).Count();
+       
+        //var resultado= context.cliente.Single(cliente => cliente.cpf == cpf);
+        if (resultado >= 1)
+        {
+            return true;
+        }
+        return false;
     }
 
     /// <summary>
@@ -94,26 +95,21 @@ class RepositoryProduct(IConnect host):IRepositoryProduct
     /// <returns>ListaProduct com os registros.</returns>
     public  async Task<ListaProduct> GetAllProduct(int limit, int page)
     {
-        
-        var offset = (page - 1) * limit;
-        
-       await using NpgsqlConnection connect=host.Connect();;
-       await connect.OpenAsync();
-       await using var cmd = new NpgsqlCommand("SELECT * FROM produto LIMIT @limit OFFSET @offset",connect);
-       cmd.Parameters.AddWithValue("limit", limit);
-       cmd.Parameters.AddWithValue("offset", offset);
-       await using var read= await  cmd.ExecuteReaderAsync();
+        var context = host;
+        var take = limit > 0 ? limit : 100;
+        var skip = (page > 1 ? page - 1 : 0) * take;
+        var list=await context.produto.OrderBy(pr => pr.id).Skip(skip).Take(take).ToListAsync();
        ListaProduct lista=new();
 
-        while (await read.ReadAsync())
+        foreach(var c in list)
         {
             ProdutoDto campos=new();
-            campos.Id=(int)read["id"];
-            campos.Nome=(string)read["nome"];
-            campos.Codigo=(int)read["codigo"];
-            campos.Quantidade=(int)read["quantidade"];
-            campos.ValorRevenda=(decimal)read["valor_revenda"];
-            campos.Lote=(int)read["lote"];
+            campos.Id=c.id;
+            campos.Nome=c.nome;
+            campos.Codigo=c.codigo;
+            campos.Quantidade=c.quantidade;
+            campos.ValorRevenda=c.valor_revenda;
+            campos.Lote=c.lote;
             lista.Product.Add(campos);
         }
         return lista;
@@ -127,23 +123,19 @@ class RepositoryProduct(IConnect host):IRepositoryProduct
     /// <returns>ListaProduct com dados parciais.</returns>
     public  async Task<ListaProduct> GetEstoque(int limit,int page)
     {
-        var offset = (page - 1) * limit;
+        var context = host;
+        var take = limit > 0 ? limit : 100;
+        var skip = (page > 1 ? page - 1 : 0) * take;
+        var list=await context.produto.OrderBy(pr => pr.id).Skip(skip).Take(take)
+            .Select(pr=>new {pr.nome,pr.quantidade}).ToListAsync();
         
-    
-       await using NpgsqlConnection connect=host.Connect();
-       await connect.OpenAsync();
-
-       await using var cmd=new NpgsqlCommand("SELECT nome,quantidade FROM produto LIMIT @limit OFFSET @offset",connect);
-       cmd.Parameters.AddWithValue("limit", limit);
-       cmd.Parameters.AddWithValue("offset", offset);
-       var read=await cmd.ExecuteReaderAsync();
+       
         ListaProduct lista=new();
-        while(await read.ReadAsync())
+        foreach(var c in list)
         {
             ProdutoDto campos=new();
-            campos.Nome=(string)read["nome"];
-            campos.Quantidade=(int)read["quantidade"];
-
+            campos.Nome=c.nome;
+            campos.Quantidade=c.quantidade;
             lista.Product.Add(campos);
         }
         return lista;
@@ -155,15 +147,14 @@ class RepositoryProduct(IConnect host):IRepositoryProduct
     public async Task<List<decimal>> GetValorBruto()
     {
         
-      await using  NpgsqlConnection connect=host.Connect();
-      await connect.OpenAsync();
+        var context = host;
+        var list=await context.produto.Select(pr=>new {pr.valor_revenda}).ToListAsync();
 
-      await  using var cmd= new NpgsqlCommand("SELECT valor_revenda FROM produto",connect);
-      var read= await cmd.ExecuteReaderAsync();
+    
         List<decimal> lista=new();
-        while(await read.ReadAsync())
+        foreach(var c in list)
         {
-            lista.Add((decimal)read["valor_revenda"]);
+            lista.Add(c.valor_revenda);
         }
         return lista;
     }
@@ -174,18 +165,12 @@ class RepositoryProduct(IConnect host):IRepositoryProduct
     /// <returns>Número de linhas afetadas.</returns>
     public  async Task<int> AddProduct(ProdutoDto campos)
     {
-
-      await using  NpgsqlConnection connect=  host.Connect();
-      await   connect.OpenAsync();
-
-       await using var cmd = new NpgsqlCommand("INSERT INTO produto (nome ,codigo,quantidade,valor_revenda,lote) VALUES (@nome,@codigo,@quantidade,@valor_revenda,@lote) ",connect);
-        cmd.Parameters.AddWithValue("nome",campos.Nome);
-        cmd.Parameters.AddWithValue("codigo", campos.Codigo);
-        cmd.Parameters.AddWithValue("quantidade",campos.Quantidade);
-        cmd.Parameters.AddWithValue("valor_revenda",campos.ValorRevenda);
-        cmd.Parameters.AddWithValue("lote",campos.Lote);
-        int resultado=await cmd.ExecuteNonQueryAsync();
-        return resultado;
+        
+        var context = host;
+        await  context.produto.AddAsync(new Produto(){nome = campos.Nome,codigo = campos.Codigo,quantidade = campos.Quantidade,valor_revenda = campos.ValorRevenda,lote = campos.Lote});
+        var result = await context.SaveChangesAsync();
+       
+        return result;
 
     }
     /// <summary>
@@ -197,20 +182,17 @@ class RepositoryProduct(IConnect host):IRepositoryProduct
     public async Task<int> UpdateProduct(ProdutoDto campos,int id)
     {
 
-      await using  NpgsqlConnection connect= host.Connect();
-      await connect.OpenAsync();
+        var context = host;
+     var result= await  context.produto.Where(pr=>pr.id==id).ExecuteUpdateAsync(setter=>
+            setter.SetProperty(pr=>pr.nome,campos.Nome)
+            .SetProperty(pr=>pr.codigo,campos.Codigo)
+            .SetProperty(pr=>pr.lote,campos.Lote)
+            .SetProperty(pr=>pr.quantidade,campos.Quantidade)
+            .SetProperty(pr=>pr.valor_revenda,campos.ValorRevenda));
+       
 
-       await using var cmd = new NpgsqlCommand("UPDATE produto set nome = @nome,codigo=@codigo,quantidade=@quantidade,valor_revenda=@valor_revenda,lote=@lote WHERE id = @id",connect);
-       cmd.Parameters.AddWithValue("nome",campos.Nome);
-       cmd.Parameters.AddWithValue("codigo",campos.Codigo);
-       cmd.Parameters.AddWithValue("lote",campos.Lote);
-       cmd.Parameters.AddWithValue("quantidade",campos.Quantidade);
-       cmd.Parameters.AddWithValue("valor_revenda",campos.ValorRevenda);
-       cmd.Parameters.AddWithValue("id", id);
-       int resultado= await cmd.ExecuteNonQueryAsync();
 
-       return resultado;
-
+        return result;
     }
     /// <summary>
     /// Remove um produto pelo ID.
@@ -219,23 +201,19 @@ class RepositoryProduct(IConnect host):IRepositoryProduct
     /// <returns>Número de linhas afetadas.</returns>
     public  async Task<int> DeleteProduct(int id)
     {
-       await using NpgsqlConnection connect=host.Connect(); 
-       await connect.OpenAsync();
-       await using var cmd=new NpgsqlCommand("DELETE FROM produto WHERE id=@id",connect);
-       cmd.Parameters.AddWithValue("id", id);
-       int resultado= await cmd.ExecuteNonQueryAsync();
-       return resultado;
+        var context = host;
+        int resultado= await context.produto.Where(pr=>pr.id==id).ExecuteDeleteAsync();
+        //revisar e colocar pra pegar por id
+        return resultado ;
     }
 
     
     
     public async Task<long> QuantidadeProduct()
     {
-        await using NpgsqlConnection connect = host.Connect();
-        await connect.OpenAsync();
-        await using var cmd = new NpgsqlCommand("SELECT COUNT(*) FROM produto", connect);
-        var result = (long)await cmd.ExecuteScalarAsync();
-        return result;
+        var context = host;
+        var resultado = await context.produto.CountAsync();
+        return resultado;
     }
 }
 }
