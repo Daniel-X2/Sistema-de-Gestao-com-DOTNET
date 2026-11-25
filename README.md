@@ -8,7 +8,7 @@
 [![Docker](https://img.shields.io/github/actions/workflow/status/Daniel-X2/Sistema-de-Gestao-com-DOTNET/docker.yaml?branch=main&style=flat-square&label=Docker)](https://github.com/Daniel-X2/Sistema-de-Gestao-com-DOTNET/actions/workflows/docker.yaml)
 [![Testes](https://img.shields.io/github/actions/workflow/status/Daniel-X2/Sistema-de-Gestao-com-DOTNET/tests.yaml?branch=main&style=flat-square&label=Testes)](https://github.com/Daniel-X2/Sistema-de-Gestao-com-DOTNET/actions/workflows/tests.yaml)
 
-[LinkedIn](https://www.linkedin.com/in/daniel-silva-dev1/)
+[LinkedIn](https://www.linkedin.com/in/daniel-silva-dev1/) · [GitHub](https://github.com/Daniel-X2)
 
 </div>
 
