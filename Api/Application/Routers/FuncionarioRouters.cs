@@ -97,5 +97,10 @@ Credenciais para teste:
                 }
             return Results.BadRequest("erro ao atualizar");
             }).WithTags("Funcionario").WithSummary("Atualiza o funcionario").WithDescription("Atualiza as informações de um funcionário já existente com base no ID. Retorna o status da atualização.").RequireAuthorization();
-        }       
+            app.Map("/saude",IResult() =>
+            {
+                return Results.Ok("top");
+            });
+        } 
+             
 }

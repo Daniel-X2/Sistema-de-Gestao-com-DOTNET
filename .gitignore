@@ -30,3 +30,6 @@ Api/obj/Api.csproj.nuget.dgspec.json
 /Api/Logs
 /Api/obj
 /Api/obj
+SKILL.md
+.github/workflows/tests.yaml
+.gitignore
